@@ -1,24 +1,30 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from "@angular/router";
+import { Subscription } from 'rxjs';
 import { DvwApiService } from '../dvw-api.service';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-tourism-module',
   templateUrl: './tourism-module.component.html',
   styleUrls: ['./tourism-module.component.scss']
 })
-export class TourismModuleComponent implements OnInit {
+export class TourismModuleComponent implements OnInit, OnDestroy {
   private selectedModule: string;
-  constructor(private route: ActivatedRoute, private apiService: DvwApiService) { }
+  routeSub: Subscription
+  dimensionSelector = new FormControl();
+  selectors;
+
+  constructor(private route: ActivatedRoute, private apiService: DvwApiService) {}
 
   ngOnInit() {
-    this.route.paramMap.subscribe((params) => {
-      console.log(params);
+    this.routeSub = this.route.paramMap.subscribe((params) => {
       this.selectedModule = params.get('id');
-      this.apiService.getDimensions(this.selectedModule).subscribe((dimensions) => {
-        console.log('dimensions', dimensions);
-      });
+      this.selectors = this.apiService.getDimensionsWithOptions(this.selectedModule)
     });
   }
 
+  ngOnDestroy() {
+    this.routeSub.unsubscribe();
+  }
 }
