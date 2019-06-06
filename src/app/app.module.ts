@@ -9,11 +9,13 @@ import { TourismModuleComponent } from './tourism-module/tourism-module.componen
 import { MatSelectModule } from '@angular/material/select'; 
 import { DvwApiService } from './dvw-api.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ModuleListComponent } from './module-list/module-list.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    TourismModuleComponent
+    TourismModuleComponent,
+    ModuleListComponent
   ],
   imports: [
     BrowserModule,
