@@ -1,4 +1,4 @@
-<h1>DBEDT Tourism Datawarehouse</h1>
+<!--<h1>DBEDT Tourism Datawarehouse</h1>
 <ul>
   <li>
     <i class="material-icons">trending_up</i> <a [routerLink]="['/module/ade']">Visitor Trends (Arrivals/Days/Expenditures)</a>
@@ -9,4 +9,39 @@
   <li>
     <i class="material-icons">location_city</i> <a [routerLink]="['/module/hotel']">Hotel Performance</a>
   </li>
-</ul>
+</ul>-->
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm">
+      <i class="material-icons">trending_up</i> <a [routerLink]="['/module/ade']">Visitor Trends (Arrivals/Days/Expenditures)</a>
+    </div>
+    <div class="col-sm">
+      <i class="material-icons">flight</i> <a [routerLink]="['/module/airseat']">Air Seats to Hawaii</a>
+    </div>
+    <div class="col-sm">
+      <i class="material-icons">location_city</i> <a [routerLink]="['/module/hotel']">Hotel Performance</a>
+    </div>
+  </div>
+</div>
+
+<div class="card-deck">
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title"><i class="material-icons">trending_up</i></h5>
+      <p class="card-text"><a class="stretched-link" [routerLink]="['/module/ade']">Visitor Trends (Arrivals/Days/Expenditures)</a></p>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title"><i class="material-icons">flight</i></h5>
+      <p class="card-text"><a class="stretched-link" [routerLink]="['/module/airseat']">Air Seats to Hawaii</a></p>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title"><i class="material-icons">location_city</i></h5>
+      <p class="card-text"><a class="stretched-link" [routerLink]="['/module/hotel']">Hotel Performance</a></p>
+    </div>
+  </div>
+</div>

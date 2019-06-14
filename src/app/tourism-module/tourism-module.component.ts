@@ -13,14 +13,14 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
   private selectedModule: string;
   routeSub: Subscription
   dimensionSelector = new FormControl();
-  selectors;
+  selectors$;
 
   constructor(private route: ActivatedRoute, private apiService: DvwApiService) {}
 
   ngOnInit() {
     this.routeSub = this.route.paramMap.subscribe((params) => {
       this.selectedModule = params.get('id');
-      this.selectors = this.apiService.getDimensionsWithOptions(this.selectedModule)
+      this.selectors$ = this.apiService.getDimensionsWithOptions(this.selectedModule);
     });
   }
 

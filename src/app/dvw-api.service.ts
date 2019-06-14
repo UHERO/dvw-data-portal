@@ -56,12 +56,13 @@ export class DvwApiService {
             map((res: any) => {
               const selector = { name: d, options: res.data };
               selectors.push(selector)
+              this.cachedDimensionOptions[mod] = selectors;
+              moduleDimensionOptions$ = null;
               return selector;
             })
           )))
         )
       )
-      this.cachedDimensionOptions[mod] = selectors;
       return moduleDimensionOptions$;
     }
   }

@@ -1,10 +1,13 @@
-<ng-container>
-  <ng-template ngFor let-selector [ngForOf]="selectors | async">
+<div *ngIf="selectors$ | async as selectors; else loading">
+  <ng-template ngFor let-selector [ngForOf]="selectors">
     <mat-form-field>
-        <mat-label>{{selector.name}}</mat-label>
-        <mat-select [formControl]="dimensionSelector" multiple>
-          <mat-option *ngFor="let opt of selector.options" [value]="opt.handle">{{opt.nameW}}</mat-option>
-        </mat-select>    
+      <mat-label>{{selector.name}}</mat-label>
+      <mat-select [formControl]="dimensionSelector" multiple>
+        <mat-option *ngFor="let opt of selector.options" [value]="opt.handle">{{opt.nameW}}</mat-option>
+      </mat-select>
     </mat-form-field>
   </ng-template>
-</ng-container>
+</div>
+<ng-template #loading>
+    <mat-spinner></mat-spinner>
+</ng-template>
