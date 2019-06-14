@@ -11,12 +11,14 @@ import { MatSelectModule } from '@angular/material/select';
 import { DvwApiService } from './dvw-api.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ModuleListComponent } from './module-list/module-list.component';
+import { DimensionSelectorComponent } from './dimension-selector/dimension-selector.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     TourismModuleComponent,
-    ModuleListComponent
+    ModuleListComponent,
+    DimensionSelectorComponent
   ],
   imports: [
     BrowserModule,
