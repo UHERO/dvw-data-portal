@@ -1,47 +1,22 @@
-<!--<h1>DBEDT Tourism Datawarehouse</h1>
-<ul>
-  <li>
-    <i class="material-icons">trending_up</i> <a [routerLink]="['/module/ade']">Visitor Trends (Arrivals/Days/Expenditures)</a>
-  </li>
-  <li>
-    <i class="material-icons">flight</i> <a [routerLink]="['/module/airseat']">Air Seats to Hawaii</a>
-  </li>
-  <li>
-    <i class="material-icons">location_city</i> <a [routerLink]="['/module/hotel']">Hotel Performance</a>
-  </li>
-</ul>-->
-
 <div class="container-fluid">
-  <div class="row">
-    <div class="col-sm">
-      <i class="material-icons">trending_up</i> <a [routerLink]="['/module/ade']">Visitor Trends (Arrivals/Days/Expenditures)</a>
+  <div class="card-deck">
+    <div class="card text-center">
+      <div class="card-body">
+        <h1 class="card-title mb-0"><i class="material-icons module-icon">trending_up</i></h1>
+        <p class="card-text"><a class="stretched-link" title="Visitor Trends (Arrivals/Days/Expenditures)" [routerLink]="['/module/ade']">Visitor Trends (Arrivals/Days/Expenditures)</a></p>
+      </div>
     </div>
-    <div class="col-sm">
-      <i class="material-icons">flight</i> <a [routerLink]="['/module/airseat']">Air Seats to Hawaii</a>
+    <div class="card text-center">
+      <div class="card-body">
+        <h1 class="card-title mb-0"><i class="material-icons module-icon">flight</i></h1>
+        <p class="card-text"><a class="stretched-link" title="Air Seats to Hawaii" [routerLink]="['/module/airseat']">Air Seats to Hawaii</a></p>
+      </div>
     </div>
-    <div class="col-sm">
-      <i class="material-icons">location_city</i> <a [routerLink]="['/module/hotel']">Hotel Performance</a>
-    </div>
-  </div>
-</div>
-
-<div class="card-deck">
-  <div class="card">
-    <div class="card-body">
-      <h5 class="card-title"><i class="material-icons">trending_up</i></h5>
-      <p class="card-text"><a class="stretched-link" [routerLink]="['/module/ade']">Visitor Trends (Arrivals/Days/Expenditures)</a></p>
-    </div>
-  </div>
-  <div class="card">
-    <div class="card-body">
-      <h5 class="card-title"><i class="material-icons">flight</i></h5>
-      <p class="card-text"><a class="stretched-link" [routerLink]="['/module/airseat']">Air Seats to Hawaii</a></p>
-    </div>
-  </div>
-  <div class="card">
-    <div class="card-body">
-      <h5 class="card-title"><i class="material-icons">location_city</i></h5>
-      <p class="card-text"><a class="stretched-link" [routerLink]="['/module/hotel']">Hotel Performance</a></p>
+    <div class="card text-center">
+      <div class="card-body">
+        <h1 class="card-title mb-0"><i class="material-icons module-icon">location_city</i></h1>
+        <p class="card-text"><a class="stretched-link" title="Hotel Performance" [routerLink]="['/module/hotel']">Hotel Performance</a></p>
+      </div>
     </div>
   </div>
 </div>

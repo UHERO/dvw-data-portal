@@ -9,3 +9,19 @@
 @import "~bootstrap/scss/card";
 @import "~bootstrap/scss/utilities";
 @import './base/reset';
+
+.mat-form-field-label {
+    text-transform: capitalize;
+}
+
+.mat-progress-spinner circle, .mat-spinner circle {
+    stroke: $link-color;
+}
+
+.material-icons {
+    font-size: unset;
+}
+
+.module-icon {
+    color: $link-color;
+}

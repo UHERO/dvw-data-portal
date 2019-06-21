@@ -9,6 +9,7 @@ import { Subscription } from 'rxjs';
 })
 export class TourismModuleComponent implements OnInit, OnDestroy {
   selectedModule: string;
+  selectedDimensions: any;
   routeSub: Subscription
 
   constructor(private route: ActivatedRoute) {}
@@ -21,5 +22,10 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.routeSub.unsubscribe();
+  }
+
+  updateDimensions(event) {
+    //this.selectedDimensions = {};
+    this.selectedDimensions = Object.assign({}, event);
   }
 }

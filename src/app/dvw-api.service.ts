@@ -14,6 +14,28 @@ export class DvwApiService {
   private cachedDimensionOptions = [];
   constructor(private http: HttpClient) { }
 
+  testData = {
+    "data": {
+      "frequency": "M",
+      "series": [
+        {
+          "columns": ["VV101", "MM101", "DI10"],
+          "observationStart": "2011-01-01",
+          "observationEnd": "2011-02-01",
+          "dates": [ "2011-01-01", "2011-02-01"],
+          "values": [ 903.23, 901.80],
+        },
+        {
+          "columns": ["VV101", "MM101", "DI20"],
+          "observationStart": "2011-01-01",
+          "observationEnd": "2011-02-01",
+          "dates": [ "2011-01-01", "2011-02-01"],
+          "values": [ 843.37, 849.08],
+        },
+      ]
+    }
+  }
+
   getDimensions(mod: string): any {
     if (this.cachedDimensions[mod]) {
       return observableOf(this.cachedDimensions[mod]);
@@ -65,6 +87,10 @@ export class DvwApiService {
       )
       return moduleDimensionOptions$;
     }
+  }
+
+  getSeries(dimensionList, freq) {
+    return this.testData.data;
   }
 
 }

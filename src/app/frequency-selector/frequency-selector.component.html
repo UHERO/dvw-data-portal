@@ -1,0 +1,18 @@
+<div>
+  <!-- <mat-form-field>
+    <mat-label>Frequency</mat-label>
+    <mat-select [formControl]="frequencySelector">
+      <mat-option [value]="A">Annual</mat-option>
+      <mat-option [value]="Q">Quarterly</mat-option>
+      <mat-option [value]="M">Monthly</mat-option>
+    </mat-select>
+  </mat-form-field> -->
+  <mat-form-field>
+    <mat-label>Frequency</mat-label>
+    <mat-select [(ngModel)]="selectedValue" name="frequency">
+      <mat-option *ngFor="let frequency of frequencies" [value]="frequency.value">
+        {{frequency.label}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
