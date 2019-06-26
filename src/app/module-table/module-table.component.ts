@@ -144,70 +144,42 @@ export class ModuleTableComponent implements OnInit, OnChanges {
 
   updateStartYear(event: any) {
     this.datesSelected.selectedStartYear = event;
-    console.log('updateStartYear', this.datesSelected)
-    const newDateArray = this._helper.categoryDateArray(this.datesSelected, [this.frequency]);
-    console.log('newDateArray', newDateArray);
-    const newColumns = [];
-    Object.keys(this.dimensions).forEach(key => newColumns.push({ title: key, data: key }));
-    newDateArray.forEach((date) => {
-      newColumns.push({ title: date.tableDate, data: 'observations.' + date.tableDate });
-    });
-    this.createDatatable(newColumns, this.tableData);
+    this.updateDatatable(this.datesSelected, this.frequency, this.tableData);
   }
 
   updateEndYear(event: any) {
     this.datesSelected.selectedEndYear = event;
-    const newDateArray = this._helper.categoryDateArray(this.datesSelected, [this.frequency]);
-    const newColumns = [];
-    Object.keys(this.dimensions).forEach(key => newColumns.push({ title: key, data: key }));
-    newDateArray.forEach((date) => {
-      newColumns.push({ title: date.tableDate, data: 'observations.' + date.tableDate });
-    });
-    this.createDatatable(newColumns, this.tableData);
+    this.updateDatatable(this.datesSelected, this.frequency, this.tableData);
   }
 
   updateStartQuarter(event: any) {
     this.datesSelected.selectedStartQuarter = event;
-    const newDateArray = this._helper.categoryDateArray(this.datesSelected, [this.frequency]);
-    const newColumns = [];
-    Object.keys(this.dimensions).forEach(key => newColumns.push({ title: key, data: key }));
-    newDateArray.forEach((date) => {
-      newColumns.push({ title: date.tableDate, data: 'observations.' + date.tableDate });
-    });
-    this.createDatatable(newColumns, this.tableData);
+    this.updateDatatable(this.datesSelected, this.frequency, this.tableData);
   }
 
   updateEndQuarter(event: any) {
     this.datesSelected.selectedEndQuarter = event;
-    const newDateArray = this._helper.categoryDateArray(this.datesSelected, [this.frequency]);
-    const newColumns = [];
-    Object.keys(this.dimensions).forEach(key => newColumns.push({ title: key, data: key }));
-    newDateArray.forEach((date) => {
-      newColumns.push({ title: date.tableDate, data: 'observations.' + date.tableDate });
-    });
-    this.createDatatable(newColumns, this.tableData);
+    this.updateDatatable(this.datesSelected, this.frequency, this.tableData);
   }
 
   updateStartMonth(event: any) {
     this.datesSelected.selectedStartMonth = event;
-    const newDateArray = this._helper.categoryDateArray(this.datesSelected, [this.frequency]);
-    const newColumns = [];
-    Object.keys(this.dimensions).forEach(key => newColumns.push({ title: key, data: key }));
-    newDateArray.forEach((date) => {
-      newColumns.push({ title: date.tableDate, data: 'observations.' + date.tableDate });
-    });
-    this.createDatatable(newColumns, this.tableData);
+    this.updateDatatable(this.datesSelected, this.frequency, this.tableData);
   }
 
   updateEndMonth(event: any) {
     this.datesSelected.selectedEndMonth = event;
-    const newDateArray = this._helper.categoryDateArray(this.datesSelected, [this.frequency]);
+    this.updateDatatable(this.datesSelected, this.frequency, this.tableData);
+  }
+
+  updateDatatable(datesSelected: DatesSelected, freq: string, tableData: Array<any>) {
+    const newDateArray = this._helper.categoryDateArray(datesSelected, [freq]);
     const newColumns = [];
     Object.keys(this.dimensions).forEach(key => newColumns.push({ title: key, data: key }));
     newDateArray.forEach((date) => {
       newColumns.push({ title: date.tableDate, data: 'observations.' + date.tableDate });
     });
-    this.createDatatable(newColumns, this.tableData);
+    this.createDatatable(newColumns, tableData);
   }
 
   createDatatable(tableColumns: Array<any>, tableData: Array<any>) {
