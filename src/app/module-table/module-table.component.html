@@ -1,2 +1,17 @@
-<table id="module-table" width="100%" class="stripe">
-</table>
+<app-year-selector *ngIf="dateArray" [rangeLabel]="'From'" [dates]="datesSelected.fromYearList"
+    [(selectedYear)]="datesSelected.selectedStartYear" (updateYearSelection)="updateStartYear($event)">
+</app-year-selector>
+<app-quarter-selector *ngIf="dateArray && frequency === 'Q'" [quarters]="datesSelected.fromQuarterList"
+    [(selectedQuarter)]="datesSelected.selectedStartQuarter" (updateQuarterSelection)="updateStartQuarter($event)">
+</app-quarter-selector>
+<app-month-selector *ngIf="dateArray && frequency === 'M'" [months]="datesSelected.fromMonthList"
+[(selectedMonth)]="datesSelected.selectedStartMonth" (updateMonthSelection)="updateStartMonth($event)"></app-month-selector>
+<app-year-selector *ngIf="dateArray" [rangeLabel]="'To'" [dates]="datesSelected.toYearList"
+    [(selectedYear)]="datesSelected.selectedEndYear" (updateYearSelection)="updateEndYear($event)"></app-year-selector>
+<app-quarter-selector *ngIf="dateArray && frequency === 'Q'" [quarters]="datesSelected.toQuarterList"
+    [(selectedQuarter)]="datesSelected.selectedEndQuarter" (updateQuarterSelection)="updateEndQuarter($event)">
+</app-quarter-selector>
+<app-month-selector *ngIf="dateArray && frequency === 'M'" [months]="datesSelected.toMonthList"
+    [(selectedMonth)]="datesSelected.selectedEndMonth" (updateMonthSelection)="updateEndMonth($event)">
+</app-month-selector>
+<table id="module-table" width="100%" class="stripe"></table>

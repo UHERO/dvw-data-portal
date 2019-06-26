@@ -1,3 +1,3 @@
 <app-dimension-selector [selectedModule]="selectedModule" (updateDimensionSelection)="updateDimensions($event)"></app-dimension-selector>
-<app-frequency-selector></app-frequency-selector>
-<app-module-table [dimensions]="selectedDimensions"></app-module-table>
+<app-frequency-selector (updateFrequencySelection)="updateFrequency($event)"></app-frequency-selector>
+<app-module-table [selectedModule]="selectedModule" [dimensions]="selectedDimensions" [frequency]="selectedFrequency"></app-module-table>

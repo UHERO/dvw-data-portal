@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class HelperService {
-  
+
   constructor() { }
 
   categoryDateArray(selectedDates, selectedFreqs: Array<string>) {
@@ -28,18 +28,18 @@ export class HelperService {
     while (startYear + '-' + m[startMonth] + '-01' <= endYear + '-' + m[endMonth] + '-01') {
       // Frequency display order: M, Q, A
       if (monthSelected) {
-        dateArray.push({date: startYear.toString() + '-' + m[startMonth] + '-01', tableDate: startYear.toString() + '-' + m[startMonth]});
+        dateArray.push({ date: startYear.toString() + '-' + m[startMonth] + '-01', tableDate: startYear.toString() + '-' + m[startMonth] });
       }
       if (quarterSelected) {
         const qMonth = this.addQuarterObs(startMonth, monthSelected);
         if (qMonth) {
-          dateArray.push({date: startYear.toString() + '-' + m[qMonth] + '-01', tableDate: startYear.toString() + ' ' + q[qMonth]});
+          dateArray.push({ date: startYear.toString() + '-' + m[qMonth] + '-01', tableDate: startYear.toString() + ' ' + q[qMonth] });
         }
       }
       if (annualSelected) {
         const addAnnual = this.addAnnualObs(startMonth, monthSelected, quarterSelected);
         if (addAnnual) {
-          dateArray.push({date: startYear.toString() + '-01-01', tableDate: startYear.toString()});
+          dateArray.push({ date: startYear.toString() + '-01-01', tableDate: startYear.toString() });
         }
       }
       startYear = startMonth === 12 ? startYear += 1 : startYear;
@@ -118,5 +118,123 @@ export class HelperService {
       }
     }
     return endMonth;
+  }
+
+  // Create list of years for year range selectors
+  yearsRange(selectedDates) {
+    let allYears = [];
+    let startYear = +selectedDates.startDate.substr(0, 4);
+    const endYear = +selectedDates.endDate.substr(0, 4);
+    while (startYear <= endYear) {
+      allYears.push(startYear.toString());
+      startYear += 1;
+    }
+    allYears = allYears.reverse();
+    const minYear = allYears[allYears.length - 1];
+    const maxYear = allYears[0];
+    const selectedStartIndex = allYears.indexOf(selectedDates.selectedStartYear);
+    const selectedEndIndex = allYears.indexOf(selectedDates.selectedEndYear);
+    selectedDates.selectedStartYear = selectedStartIndex > -1 ? selectedDates.selectedStartYear : minYear;
+    selectedDates.selectedEndYear = selectedEndIndex > -1 ? selectedDates.selectedEndYear : maxYear;
+    selectedDates.fromYearList = allYears;
+    selectedDates.toYearList = allYears;
+  }
+
+  // Create list of quarters for quarter range selectors
+  quartersRange(selectedDates) {
+    const allQuarters = ['Q4', 'Q3', 'Q2', 'Q1'];
+    selectedDates.fromQuarterList = allQuarters;
+    selectedDates.toQuarterList = allQuarters;
+    this.minMaxYearQuarters(selectedDates);
+    const minQuarter = selectedDates.fromQuarterList[selectedDates.fromQuarterList.length - 1];
+    const maxQuarter = selectedDates.toQuarterList[0];
+    const selectedStartIndex = selectedDates.fromQuarterList.indexOf(selectedDates.selectedStartQuarter);
+    const selectedEndIndex = selectedDates.toQuarterList.indexOf(selectedDates.selectedEndQuarter);
+    selectedDates.selectedStartQuarter = selectedStartIndex > -1 ? selectedDates.selectedStartQuarter : minQuarter;
+    selectedDates.selectedEndQuarter = selectedEndIndex > -1 ? selectedDates.selectedEndQuarter : maxQuarter;
+  }
+
+  minMaxYearQuarters(selectedDates) {
+    // If selectedStartYear is set to earliest/latest possible year, set quarter list based on earliest/latest month available
+    // If selectedStartYear is set to earliest/latest possible year, set quarter list based on earliest/latest month available
+    const minYear = selectedDates.startDate.substr(0, 4);
+    const maxYear = selectedDates.endDate.substr(0, 4);
+    const startMonth = +selectedDates.startDate.substr(5, 2);
+    const endMonth = +selectedDates.endDate.substr(5, 2);
+    if (selectedDates.selectedStartYear === minYear) {
+      selectedDates.fromQuarterList = this.minYearQuarters(startMonth);
+    }
+    if (selectedDates.selectedStartYear === maxYear) {
+      selectedDates.fromQuarterList = this.maxYearQuarters(endMonth);
+    }
+    if (selectedDates.selectedEndYear === maxYear) {
+      selectedDates.toQuarterList = this.maxYearQuarters(endMonth);
+    }
+    if (selectedDates.selectedEndYear === minYear) {
+      selectedDates.toQuarterList = this.minYearQuarters(startMonth);
+    }
+  }
+
+  minYearQuarters(month) {
+    const q = ['Q4', 'Q3', 'Q2', 'Q1'];
+    if (4 <= month && month < 7) {
+      return q.slice(0, 3);
+    }
+    if (7 <= month && month < 10) {
+      return q.slice(0, 2);
+    }
+    if (10 <= month) {
+      return q.slice(0, 1);
+    }
+    return q;
+  }
+
+  maxYearQuarters(month) {
+    const q = ['Q4', 'Q3', 'Q2', 'Q1'];
+    if (1 <= month && month < 4) {
+      return q.slice(3);
+    }
+    if (4 <= month && month < 7) {
+      return q.slice(2);
+    }
+    if (7 <= month && month < 10) {
+      return q.slice(1);
+    }
+    return q;
+  }
+
+  // Create list of months for month range selectors
+  monthsRange(selectedDates) {
+    const allMonths = ['12', '11', '10', '09', '08', '07', '06', '05', '04', '03', '02', '01'];
+    selectedDates.fromMonthList = allMonths;
+    selectedDates.toMonthList = allMonths;
+    this.minMaxYearMonths(selectedDates, allMonths);
+    const minMonth = selectedDates.fromMonthList[selectedDates.fromMonthList.length - 1];
+    const maxMonth = selectedDates.toMonthList[0];
+    const selectedStartIndex = selectedDates.fromMonthList.indexOf(selectedDates.selectedStartMonth);
+    const selectedEndIndex = selectedDates.toMonthList.indexOf(selectedDates.selectedEndMonth);
+    selectedDates.selectedStartMonth = selectedStartIndex > -1 ? selectedDates.selectedStartMonth : minMonth;
+    selectedDates.selectedEndMonth = selectedEndIndex > -1 ? selectedDates.selectedEndMonth : maxMonth;
+  }
+
+  minMaxYearMonths(selectedDates, allMonths) {
+    // If selectedStartYear is set to earliest/latest possible year, set month list based on earliest/latest month available
+    // If selectedEndYear is set to earliest/latest possible year, set month list based on earliest/latest month available
+    const minYear = selectedDates.startDate.substr(0, 4);
+    const maxYear = selectedDates.endDate.substr(0, 4);
+    const startMonth = selectedDates.startDate.substr(5, 2);
+    const endMonth = selectedDates.endDate.substr(5, 2);
+    if (selectedDates.selectedStartYear === minYear) {
+      selectedDates.fromMonthList = allMonths.slice(0, allMonths.indexOf(startMonth) + 1);
+    }
+    if (selectedDates.selectedStartYear === maxYear) {
+      selectedDates.fromMonthList = allMonths.slice(allMonths.indexOf(endMonth), allMonths.length);
+    }
+    if (selectedDates.selectedEndYear === maxYear) {
+      selectedDates.toMonthList = allMonths.slice(allMonths.indexOf(endMonth), allMonths.length);
+    }
+    if (selectedDates.selectedEndYear === minYear) {
+      selectedDates.toMonthList = allMonths.slice(0, allMonths.indexOf(startMonth) + 1);
+    }
   }
 }

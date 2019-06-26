@@ -15,6 +15,9 @@ import { ModuleListComponent } from './module-list/module-list.component';
 import { DimensionSelectorComponent } from './dimension-selector/dimension-selector.component';
 import { FrequencySelectorComponent } from './frequency-selector/frequency-selector.component';
 import { ModuleTableComponent } from './module-table/module-table.component';
+import { YearSelectorComponent } from './year-selector/year-selector.component';
+import { MonthSelectorComponent } from './month-selector/month-selector.component';
+import { QuarterSelectorComponent } from './quarter-selector/quarter-selector.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +26,10 @@ import { ModuleTableComponent } from './module-table/module-table.component';
     ModuleListComponent,
     DimensionSelectorComponent,
     FrequencySelectorComponent,
-    ModuleTableComponent
+    ModuleTableComponent,
+    YearSelectorComponent,
+    MonthSelectorComponent,
+    QuarterSelectorComponent
   ],
   imports: [
     BrowserModule,

@@ -29,9 +29,16 @@
             "styles": [
               "node_modules/datatables.net-dt/css/jquery.dataTables.css",
               "node_modules/datatables.net-fixedcolumns-dt/css/fixedColumns.dataTables.css",
+              "node_modules/@fortawesome/fontawesome-free/css/all.css",
               "src/styles/main.scss"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/jquery/dist/jquery.js",
+              "node_modules/datatables.net/js/jquery.dataTables.js",
+              "node_modules/jszip/dist/jszip.js",
+              "node_modules/pdfmake/build/pdfmake.js",
+              "node_modules/pdfmake/build/vfs_fonts.js"
+            ]
           },
           "configurations": {
             "production": {

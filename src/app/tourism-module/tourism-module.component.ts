@@ -10,6 +10,7 @@ import { Subscription } from 'rxjs';
 export class TourismModuleComponent implements OnInit, OnDestroy {
   selectedModule: string;
   selectedDimensions: any;
+  selectedFrequency: string;
   routeSub: Subscription
 
   constructor(private route: ActivatedRoute) {}
@@ -24,8 +25,11 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
     this.routeSub.unsubscribe();
   }
 
-  updateDimensions(event) {
-    //this.selectedDimensions = {};
+  updateDimensions(event: any) {
     this.selectedDimensions = Object.assign({}, event);
+  }
+
+  updateFrequency(event: any) {
+    this.selectedFrequency = event;
   }
 }

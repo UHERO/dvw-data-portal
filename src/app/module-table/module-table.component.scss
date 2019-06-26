@@ -1,0 +1,12 @@
+:host {
+    ::ng-deep {
+        table.dataTable thead th, table.dataTable thead td {
+            text-transform: capitalize;
+            white-space: nowrap;
+        }
+
+        table.dataTable tbody td {
+            white-space: nowrap;
+        }
+    }
+}

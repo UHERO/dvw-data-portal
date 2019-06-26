@@ -12,6 +12,8 @@ const API_URL = environment.apiUrl;
 export class DvwApiService {
   private cachedDimensions = [];
   private cachedDimensionOptions = [];
+  private cachedSeries = [];
+
   constructor(private http: HttpClient) { }
 
   testData = {
@@ -89,8 +91,20 @@ export class DvwApiService {
     }
   }
 
-  getSeries(dimensionList, freq) {
-    return this.testData.data;
+  getSeries(mod: string, dimensionList: string, freq: string) {
+    // return this.testData.data;
+    if (this.cachedSeries[`${mod}:${dimensionList}:${freq}`]) {
+      return observableOf(this.cachedSeries[`${mod}:${dimensionList}:${freq}`]);
+    } else {
+      let series$ = this.http.get(`${API_URL}/series/${mod}?${dimensionList}&f=${freq}`).pipe(
+        map(mapData),
+        tap(val => {
+          this.cachedSeries[`${mod}:${dimensionList}:${freq}`] = val;
+          series$ = null;
+        }),
+      );
+      return series$;
+    }
   }
 
 }

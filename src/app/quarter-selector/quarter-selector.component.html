@@ -1,0 +1,8 @@
+<mat-form-field>
+  <mat-label>Quarter</mat-label>
+  <mat-select [(ngModel)]="selectedQuarter" [name]="quarter" (selectionChange)="changeQuarter($event)">
+    <mat-option *ngFor="let q of quarters" [value]="q">
+      {{q}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>

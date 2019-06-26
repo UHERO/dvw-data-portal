@@ -1,6 +1,8 @@
 import { Component, OnInit, OnChanges, Input } from '@angular/core';
 import { DvwApiService } from '../dvw-api.service';
 import { HelperService } from '../helper.service';
+import { DatesSelected } from '../dates-selected';
+
 import * as $ from 'jquery';
 import 'datatables.net';
 import 'datatables.net-fixedcolumns';
@@ -16,11 +18,16 @@ import { Subject } from 'rxjs';
   styleUrls: ['./module-table.component.scss']
 })
 export class ModuleTableComponent implements OnInit, OnChanges {
-  @Input() dimensions;
+  @Input() dimensions: any;
+  @Input() frequency: string;
+  @Input() selectedModule: string;
   dimensionsSource: Subject<any>;
   firstObservation: string;
   lastObservation: string;
   dateArray: Array<any>;
+  noData: boolean = false;
+  datesSelected: DatesSelected;
+  tableData: Array<any>;
   //dimensions;
   //@Input() dateArray;
   //@Input() tableData;
@@ -33,60 +40,86 @@ export class ModuleTableComponent implements OnInit, OnChanges {
 
   ngOnChanges() {
     const tableColumns = [];
+    let series;
     let allDimensionsSelected = false;
     if (this.dimensions && Object.keys(this.dimensions).length) {
       allDimensionsSelected = Object.keys(this.dimensions).every((key) => {
         return this.dimensions[key].length > 0
       }) === true;
     }
-    if (allDimensionsSelected) {
-      Object.keys(this.dimensions).forEach(key => tableColumns.push({ title: key, data: key }));
-      // TODO: FORMAT API URL REQUEST
-      const series = this.apiService.getSeries('test', 'M');
-      this.firstObservation = this.findFirstObservation(series.series);
-      this.lastObservation = this.findLastObservation(series.series);
-      console.log('firstObservation', this.firstObservation);
-      console.log('lastObservation', this.lastObservation);
-      // TODO: ONLY ALLOW SINGLE FREQUENCY
-      this.dateArray = this._helper.categoryDateArray({ startDate: this.firstObservation, endDate: this.lastObservation }, ['M']);
-      series.series.forEach((serie) => {
-        this.identifySeriesColumns(serie);
-        serie['dimensions'] = this.dimensions;
-        let results = {}
-        let valueDatePairs = this.dateArray.forEach((date) => {
-          results[date.tableDate] = ' ';
-          const dateExists = serie.dates.indexOf(date.date);
-          if (dateExists > -1) {
-            results[date.tableDate] = serie.values[dateExists].toString();
+    if (allDimensionsSelected && this.frequency) {
+      const apiParam = this.formatApiParam(this.dimensions);
+      const freq = this.frequency
+      this.apiService.getSeries(this.selectedModule, apiParam, this.frequency).subscribe((series) => {
+        Object.keys(this.dimensions).forEach(key => tableColumns.push({ title: key, data: key }));
+        if (series.module) {
+          this.noData = false;
+          // TODO: FORMAT API URL REQUEST
+          //const series = this.apiService.getSeries('test', 'M');
+          this.firstObservation = series.observationStart;
+          this.lastObservation = series.observationEnd;
+          // TODO: ONLY ALLOW SINGLE FREQUENCY
+          this.dateArray = this._helper.categoryDateArray({ startDate: this.firstObservation, endDate: this.lastObservation }, [this.frequency]);
+          this.datesSelected = this.datesSelected ? this.datesSelected : <DatesSelected>{};
+          this.datesSelected.startDate = this.firstObservation;
+          this.datesSelected.endDate = this.lastObservation;
+          this.datesSelected.selectedStartYear = this.dateArray[0];
+          this.datesSelected.selectedEndYear = this.dateArray[this.dateArray.length - 1];
+          this._helper.yearsRange(this.datesSelected);
+          if (this.frequency === 'Q') {
+            this._helper.quartersRange(this.datesSelected);
+            console.log('this.datesSelected', this.datesSelected)
           }
-        });
-        serie['observations'] = results;
-        console.log('valueDatePairs', valueDatePairs)
-      });
-      this.dateArray.forEach((date) => {
-        tableColumns.push({ title: date.tableDate, data: 'observations.' + date.tableDate });
-      });
-      console.log(series)
-      const moduleTable: any = $('#module-table');
-      if (this.tableWidget) {
-        // Destroy table if table has already been initialized
-        this.tableWidget.destroy();
-        moduleTable.empty();
-      }
-      /* this.dateArray.forEach((date) => {
-        tableColumns.push({ title: date.tableDate, data: 'observations.' + date.tableDate });
-      }); */
-      //const tableData = this.tableData;
-      this.tableWidget = moduleTable.DataTable({
-        data: series.series,
-        dom: 'Bt',
-        columns: tableColumns,
-        scrollX: true,
-        paging: false,
-        searching: false,
-        info: false,
+          if (this.frequency === 'M') {
+            this._helper.monthsRange(this.datesSelected);
+          }
+          series.series.forEach((serie) => {
+            this.identifySeriesColumns(serie);
+            serie['dimensions'] = this.dimensions;
+            let results = {}
+            this.dateArray.forEach((date) => {
+              results[date.tableDate] = ' ';
+              const dateExists = serie.dates.indexOf(date.date);
+              if (dateExists > -1) {
+                results[date.tableDate] = serie.values[dateExists] === Infinity ? ' ' : serie.values[dateExists].toLocaleString('en-US');
+              }
+            });
+            serie['observations'] = results;
+          });
+          this.dateArray.forEach((date) => {
+            tableColumns.push({ title: date.tableDate, data: 'observations.' + date.tableDate });
+          });
+          this.tableData = series.series;
+          //this.createDatatable(tableColumns, this.tableData);
+          this.createDatatable(tableColumns, this.tableData);
+          console.log('tableColumns', tableColumns);
+          console.log('tableData', this.tableData);
+          console.log('noData', this.noData)
+        }
+        if (!series.module) {
+          this.createDatatable(tableColumns, []);
+          this.noData = true;
+        }
       });
     }
+  }
+
+  formatApiParam = (dimensions: any) => {
+    let apiParam = '';
+    const dimensionKeys = Object.keys(dimensions);
+    dimensionKeys.forEach((key, index) => {
+      apiParam += `${key.substring(0, 1)}=`;
+      dimensions[key].forEach((opt, index) => {
+        apiParam += `${opt.handle}`;
+        if (index !== dimensions[key].length - 1) {
+          apiParam += `,`;
+        }
+      });
+      if (index !== dimensionKeys.length - 1) {
+        apiParam += `&`;
+      }
+    });
+    return apiParam;
   }
 
   identifySeriesColumns(serie: any) {
@@ -109,27 +142,123 @@ export class ModuleTableComponent implements OnInit, OnChanges {
     });
   }
 
-  findFirstObservation(series) {
-    let firstObservation;
-    series.forEach((serie) => {
-      if (!firstObservation || serie.observationStart < firstObservation) {
-        firstObservation = serie.observationStart;
-      }
+  updateStartYear(event: any) {
+    this.datesSelected.selectedStartYear = event;
+    console.log('updateStartYear', this.datesSelected)
+    const newDateArray = this._helper.categoryDateArray(this.datesSelected, [this.frequency]);
+    console.log('newDateArray', newDateArray);
+    const newColumns = [];
+    Object.keys(this.dimensions).forEach(key => newColumns.push({ title: key, data: key }));
+    newDateArray.forEach((date) => {
+      newColumns.push({ title: date.tableDate, data: 'observations.' + date.tableDate });
     });
-    return firstObservation;
+    this.createDatatable(newColumns, this.tableData);
   }
 
-  findLastObservation(series) {
-    let lastObservation;
-    series.forEach((serie) => {
-      if (!lastObservation || serie.observationEnd > lastObservation) {
-        lastObservation = serie.observationEnd;
-      }
+  updateEndYear(event: any) {
+    this.datesSelected.selectedEndYear = event;
+    const newDateArray = this._helper.categoryDateArray(this.datesSelected, [this.frequency]);
+    const newColumns = [];
+    Object.keys(this.dimensions).forEach(key => newColumns.push({ title: key, data: key }));
+    newDateArray.forEach((date) => {
+      newColumns.push({ title: date.tableDate, data: 'observations.' + date.tableDate });
     });
-    return lastObservation;
+    this.createDatatable(newColumns, this.tableData);
   }
 
-  createDateArray(firstDate: string, lastDate: string) {
+  updateStartQuarter(event: any) {
+    this.datesSelected.selectedStartQuarter = event;
+    const newDateArray = this._helper.categoryDateArray(this.datesSelected, [this.frequency]);
+    const newColumns = [];
+    Object.keys(this.dimensions).forEach(key => newColumns.push({ title: key, data: key }));
+    newDateArray.forEach((date) => {
+      newColumns.push({ title: date.tableDate, data: 'observations.' + date.tableDate });
+    });
+    this.createDatatable(newColumns, this.tableData);
+  }
 
+  updateEndQuarter(event: any) {
+    this.datesSelected.selectedEndQuarter = event;
+    const newDateArray = this._helper.categoryDateArray(this.datesSelected, [this.frequency]);
+    const newColumns = [];
+    Object.keys(this.dimensions).forEach(key => newColumns.push({ title: key, data: key }));
+    newDateArray.forEach((date) => {
+      newColumns.push({ title: date.tableDate, data: 'observations.' + date.tableDate });
+    });
+    this.createDatatable(newColumns, this.tableData);
+  }
+
+  updateStartMonth(event: any) {
+    this.datesSelected.selectedStartMonth = event;
+    const newDateArray = this._helper.categoryDateArray(this.datesSelected, [this.frequency]);
+    const newColumns = [];
+    Object.keys(this.dimensions).forEach(key => newColumns.push({ title: key, data: key }));
+    newDateArray.forEach((date) => {
+      newColumns.push({ title: date.tableDate, data: 'observations.' + date.tableDate });
+    });
+    this.createDatatable(newColumns, this.tableData);
+  }
+
+  updateEndMonth(event: any) {
+    this.datesSelected.selectedEndMonth = event;
+    const newDateArray = this._helper.categoryDateArray(this.datesSelected, [this.frequency]);
+    const newColumns = [];
+    Object.keys(this.dimensions).forEach(key => newColumns.push({ title: key, data: key }));
+    newDateArray.forEach((date) => {
+      newColumns.push({ title: date.tableDate, data: 'observations.' + date.tableDate });
+    });
+    this.createDatatable(newColumns, this.tableData);
+  }
+
+  createDatatable(tableColumns: Array<any>, tableData: Array<any>) {
+    const moduleTable: any = $('#module-table');
+    if (this.tableWidget) {
+      // Destroy table if table has already been initialized
+      this.tableWidget.clear().destroy();
+      //this.tableWidget.destroy();
+      moduleTable.empty();
+    }
+    console.log('this.tableWidget', this.tableWidget)
+    console.log('tableColumns', tableColumns);
+    console.log(moduleTable)
+    this.tableWidget = moduleTable.DataTable({
+      data: tableData,
+      dom: 'Bt',
+      columns: tableColumns,
+      scrollX: true,
+      paging: false,
+      searching: false,
+      info: false,
+      language: {
+        emptyTable: "No data available for current selection"
+      },
+      buttons: [
+        {
+          extend: 'excel',
+          text: '<i class="fas fa-file-excel" aria-hidden="true" title="Excel"></i>',
+          exportOptions: {
+            columns: ':visible'
+          },
+        }, {
+          extend: 'csv',
+          text: '<i class="fas fa-file-csv" aria-hidden="true" title="CSV"></i>',
+          exportOptions: {
+            columns: ':visible'
+          },
+        }, {
+          extend: 'pdf',
+          text: '<i class="fas fa-file-pdf" aria-hidden="true" title="PDF"></i>',
+          exportOptions: {
+            columns: ':visible'
+          },
+        }, {
+          extend: 'print',
+          text: '<i class="fas fa-print" aria-hidden="true" title="Print"></i>',
+          exportOptions: {
+            columns: ':visible'
+          }
+        }
+      ]
+    });
   }
 }

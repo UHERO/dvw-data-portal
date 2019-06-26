@@ -1,0 +1,8 @@
+<mat-form-field>
+  <mat-label>{{rangeLabel}}</mat-label>
+  <mat-select [(ngModel)]="selectedYear" [name]="rangeLabel" (selectionChange)="changeYear($event)">
+    <mat-option *ngFor="let year of dates" [value]="year">
+      {{year}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
