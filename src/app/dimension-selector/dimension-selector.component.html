@@ -3,11 +3,26 @@
     <mat-form-field #dimension [id]="selector.name">
       <mat-label>{{selector.name}}</mat-label>
       <mat-select (selectionChange)="change($event)" [id]="selector.name" [formControl]="dimensionSelector" multiple>
-        <mat-option *ngFor="let opt of selector.options" [value]="opt">{{opt.nameW}}</mat-option>
+        <ng-container *ngFor="let opt of selector.options">
+          <ng-container *ngIf="!opt.children">
+            <mat-option [value]="opt">{{opt.nameW}}</mat-option>
+          </ng-container>
+          <ng-container *ngIf="opt.children">
+            <mat-optgroup [label]="opt.nameW" (click)="toggle(opt)">
+              <ng-container *ngIf="opt.display">
+                <mat-option *ngFor="let child of opt.children" [value]="child" (click)="stopProp($event)">{{child.nameW}}</mat-option>
+              </ng-container>
+            </mat-optgroup>
+          </ng-container>
+        </ng-container>
+        <!-- <mat-option *ngFor="let opt of selector.options" [value]="opt">{{opt.nameW}}</mat-option> -->
+        <!-- <mat-optgroup *ngFor="let opt of selector.options" [label]="opt.nameW">
+          <mat-option *ngFor="let child of opt.children" value="child.handle">{{child.nameW}}</mat-option>
+        </mat-optgroup> -->
       </mat-select>
     </mat-form-field>
   </ng-template>
 </div>
 <ng-template #loading>
-    <mat-spinner [diameter]="50"></mat-spinner>
+  <mat-spinner [diameter]="50"></mat-spinner>
 </ng-template>

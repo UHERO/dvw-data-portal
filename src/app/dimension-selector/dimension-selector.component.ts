@@ -38,7 +38,16 @@ export class DimensionSelectorComponent implements OnInit, AfterViewInit, OnDest
   }
 
   change(event) {
+    console.log('change event', event)
     this.dimensionsList[event.source.id] = event.source.value;
     this.updateDimensionSelection.emit(this.dimensionsList);
+  }
+
+  toggle(opt) {
+    opt.display = !opt.display;
+  }
+
+  stopProp(event) {
+    event.stopPropagation();
   }
 }

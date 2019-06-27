@@ -16,28 +16,6 @@ export class DvwApiService {
 
   constructor(private http: HttpClient) { }
 
-  testData = {
-    "data": {
-      "frequency": "M",
-      "series": [
-        {
-          "columns": ["VV101", "MM101", "DI10"],
-          "observationStart": "2011-01-01",
-          "observationEnd": "2011-02-01",
-          "dates": [ "2011-01-01", "2011-02-01"],
-          "values": [ 903.23, 901.80],
-        },
-        {
-          "columns": ["VV101", "MM101", "DI20"],
-          "observationStart": "2011-01-01",
-          "observationEnd": "2011-02-01",
-          "dates": [ "2011-01-01", "2011-02-01"],
-          "values": [ 843.37, 849.08],
-        },
-      ]
-    }
-  }
-
   getDimensions(mod: string): any {
     if (this.cachedDimensions[mod]) {
       return observableOf(this.cachedDimensions[mod]);
@@ -78,7 +56,11 @@ export class DvwApiService {
         flatMap((dimensions) => 
           observableForkJoin(dimensions.map(d => this.http.get(`${API_URL}/${d}/all/${mod}`).pipe(
             map((res: any) => {
-              const selector = { name: d, options: res.data };
+              const mappedResponse = mapDimensionOptions(res);
+              mappedResponse.forEach((opt) => {
+                opt.display = true;
+              });
+              const selector = { name: d, options: mappedResponse };
               selectors.push(selector)
               this.cachedDimensionOptions[mod] = selectors;
               moduleDimensionOptions$ = null;
@@ -92,7 +74,6 @@ export class DvwApiService {
   }
 
   getSeries(mod: string, dimensionList: string, freq: string) {
-    // return this.testData.data;
     if (this.cachedSeries[`${mod}:${dimensionList}:${freq}`]) {
       return observableOf(this.cachedSeries[`${mod}:${dimensionList}:${freq}`]);
     } else {
@@ -111,4 +92,19 @@ export class DvwApiService {
 
 function mapData(response): any {
   return response.data;
+}
+
+function mapDimensionOptions(response): any {
+  const options = response.data;
+  const dataMap = options.reduce((map, value) => (map[value.handle] = value, map), {});
+  const optionTree = [];
+  options.forEach((value) => {
+    const parent = dataMap[value.parent];
+    if (parent) {
+      (parent.children || (parent.children = [])).push(value);
+    } else {
+      optionTree.push(value);
+    }
+  });
+  return optionTree;
 }
