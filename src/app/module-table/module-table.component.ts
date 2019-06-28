@@ -53,7 +53,7 @@ export class ModuleTableComponent implements OnInit, OnChanges {
       const freq = this.frequency
       this.apiService.getSeries(this.selectedModule, apiParam, this.frequency).subscribe((series) => {
         Object.keys(this.dimensions).forEach(key => tableColumns.push({ title: key, data: key, className: 'td-left' }));
-        if (series.module) {
+        if (series) {
           this.noData = false;
           this.datesSelected = this.datesSelected ? this.datesSelected : <DatesSelected>{};
           this.datesSelected.startDate = series.observationStart;
@@ -85,7 +85,7 @@ export class ModuleTableComponent implements OnInit, OnChanges {
           this.tableData = series.series;
           this.createDatatable(tableColumns, this.tableData);
         }
-        if (!series.module) {
+        if (!series) {
           this.createDatatable(tableColumns, []);
           this.noData = true;
         }
