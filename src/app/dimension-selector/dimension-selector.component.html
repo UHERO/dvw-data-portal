@@ -1,17 +1,29 @@
 <div *ngIf="selectors$ | async as selectors; else loading">
   <ng-template ngFor let-selector [ngForOf]="selectors">
-    <mat-form-field #dimension [id]="selector.name">
+    <mat-form-field class="mr-3" #dimension [id]="selector.name">
       <mat-label>{{selector.name}}</mat-label>
       <mat-select (selectionChange)="change($event)" [id]="selector.name" [formControl]="dimensionSelector" multiple>
-        <ng-container *ngFor="let opt of selector.options">
+        <!-- <ng-container *ngFor="let opt of selector.options">
           <ng-container *ngIf="!opt.children">
             <mat-option [value]="opt">{{opt.nameW}}</mat-option>
           </ng-container>
-          <ng-container *ngIf="opt.children">
+          <ng-container *ngIf="opt.header">
             <mat-optgroup [label]="opt.nameW" (click)="toggle(opt)">
-              <ng-container *ngIf="opt.display">
+              <ng-container *ngIf="!opt.display">
                 <mat-option *ngFor="let child of opt.children" [value]="child" (click)="stopProp($event)">{{child.nameW}}</mat-option>
               </ng-container>
+            </mat-optgroup>
+          </ng-container>
+        </ng-container> -->
+        <ng-container *ngFor="let opt of selector.options; let i = index;">
+          <ng-container *ngIf="!opt.children">
+            <mat-option [value]="opt">{{opt.nameW}}</mat-option>
+          </ng-container>
+          <ng-container *ngIf="opt.header">
+            <mat-optgroup (click)="toggle(i)">
+              <i *ngIf="i === activeClassIndex" class="fas fa-chevron-down"></i><i *ngIf="i !== activeClassIndex" class="expand-option-group fas fa-chevron-right"></i> {{opt.nameW}}
+              <mat-option [class.active]="i === activeClassIndex" *ngFor="let child of opt.children"
+                [value]="child" (click)="stopProp($event)">{{child.nameW}}</mat-option>
             </mat-optgroup>
           </ng-container>
         </ng-container>

@@ -1,5 +1,6 @@
-@import '@angular/material/prebuilt-themes/deeppurple-amber.css';
+// @import '@angular/material/prebuilt-themes/deeppurple-amber.css';
 // @import '~material-design-icons/iconfont/material-icons.css';
+@import './layout/theme';
 @import './abstracts/variables';
 @import '~bootstrap/scss/functions';
 @import '~bootstrap/scss/variables';
@@ -24,4 +25,16 @@
 
 .module-icon {
     color: $link-color;
+}
+
+.mat-optgroup {
+    .mat-optgroup-label {
+        color: $link-color;
+    }
+}
+
+.date-selector {
+    .mat-form-field-infix {
+        width: 100px;
+    }
 }

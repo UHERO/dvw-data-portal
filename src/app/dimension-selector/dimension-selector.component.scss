@@ -1,0 +1,10 @@
+.mat-optgroup {
+    .mat-option {
+        display: none;
+
+        &.active {
+            display: flex !important;
+            padding-left: 35px
+        }
+    }
+}

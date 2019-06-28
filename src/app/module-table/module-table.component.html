@@ -14,4 +14,5 @@
 <app-month-selector *ngIf="dateArray && frequency === 'M'" [months]="datesSelected.toMonthList"
     [(selectedMonth)]="datesSelected.selectedEndMonth" (updateMonthSelection)="updateEndMonth($event)">
 </app-month-selector>
+<p class="text-danger invalid-dates" *ngIf="invalidDates">{{invalidDates}}</p>
 <table id="module-table" width="100%" class="stripe"></table>

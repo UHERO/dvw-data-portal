@@ -1,12 +1,30 @@
 :host {
     ::ng-deep {
+        table.dataTable {
+            font-size: 0.95em;
+        }
+
         table.dataTable thead th, table.dataTable thead td {
             text-transform: capitalize;
             white-space: nowrap;
         }
 
+        th.td-right {
+            text-align: right;
+        }
+
         table.dataTable tbody td {
             white-space: nowrap;
+            padding: 10px 18px;
+        }
+
+        table.dataTable tbody td.td-right {
+            text-align: right;
         }
     }
+}
+
+.invalid-dates {
+    display: inline-block;
+    font-size: 0.95em;
 }

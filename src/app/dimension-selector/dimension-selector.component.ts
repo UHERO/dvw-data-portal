@@ -15,9 +15,8 @@ export class DimensionSelectorComponent implements OnInit, AfterViewInit, OnDest
   dimensionSelector = new FormControl();
   selectors$;
   @ViewChildren('dimension', { read: ElementRef }) dimensions: QueryList<ElementRef>;
-  dimensionIds = {};
   dimensionsList = {};
-  //dimensionsSource: Subject<any>;
+  activeClassIndex: any;
 
   constructor(private apiService: DvwApiService) { }
 
@@ -37,17 +36,16 @@ export class DimensionSelectorComponent implements OnInit, AfterViewInit, OnDest
     this.updateDimensionSelection.emit({});
   }
 
-  change(event) {
-    console.log('change event', event)
+  change(event: any) {
     this.dimensionsList[event.source.id] = event.source.value;
     this.updateDimensionSelection.emit(this.dimensionsList);
   }
 
-  toggle(opt) {
-    opt.display = !opt.display;
+  toggle(selectedIndex: any) {
+    this.activeClassIndex = (this.activeClassIndex == selectedIndex) ? null : selectedIndex;
   }
 
-  stopProp(event) {
+  stopProp(event: any) {
     event.stopPropagation();
   }
 }
