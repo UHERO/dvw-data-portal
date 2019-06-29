@@ -48,7 +48,6 @@ export class ModuleTableComponent implements OnInit, OnChanges {
         return this.dimensions[key].length > 0
       }) === true;
     }
-    console.log('table dimensions', this.dimensions)
     if (allDimensionsSelected && this.frequency && !this.invalidDates) {
       const apiParam = this.formatApiParam(this.dimensions);
       const freq = this.frequency

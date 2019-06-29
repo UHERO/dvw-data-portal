@@ -2,7 +2,6 @@ import { Component, OnInit, AfterViewInit, OnDestroy, Input, Output, EventEmitte
 import { DvwApiService } from '../dvw-api.service';
 import { HelperService } from '../helper.service';
 import { FormControl } from '@angular/forms';
-import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-dimension-selector',
@@ -18,19 +17,21 @@ export class DimensionSelectorComponent implements OnInit, AfterViewInit, OnDest
   dimensionsList = {};
   activeClassIndex: any;
 
-  constructor(private apiService: DvwApiService) { }
+  constructor(private apiService: DvwApiService, private _helper: HelperService) { }
 
   ngOnInit() {
     this.selectors$ = this.apiService.getDimensionsWithOptions(this.selectedModule);
   }
 
   ngAfterViewInit() {
-    this.dimensions.changes.subscribe(() => {
-      this.dimensions.toArray().forEach(el => {
+    const dimSubscription = this.dimensions.changes.subscribe(() => {
+      this.dimensions.toArray().forEach((el, index) => {
         this.dimensionsList[el.nativeElement.id] = new Array();
+        if (index === this.dimensions.toArray().length - 1) {
+          dimSubscription.unsubscribe();
+        }
       });
     });
-    console.log('afterviewinit dimensions', this.dimensionsList)
   }
 
   ngOnDestroy() {
@@ -39,16 +40,20 @@ export class DimensionSelectorComponent implements OnInit, AfterViewInit, OnDest
 
   change(event: any) {
     this.dimensionsList[event.source.id] = event.source.value;
-    console.log('dimensionList', this.dimensionsList)
-    console.log('dropdown event', event.source.value);
     this.updateDimensionSelection.emit(this.dimensionsList);
   }
 
-  toggle(selectedIndex: any) {
-    this.activeClassIndex = (this.activeClassIndex == selectedIndex) ? null : selectedIndex;
+  toggle(group: any) {
+    group.active = !group.active
   }
 
   stopProp(event: any) {
     event.stopPropagation();
+  }
+
+  checkAllDimensionsSelected = (dimensions) => {
+    return Object.keys(dimensions).every((key) => {
+      return dimensions[key].length > 0
+    }) === true;
   }
 }

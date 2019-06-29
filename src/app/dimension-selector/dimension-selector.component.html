@@ -20,9 +20,9 @@
             <mat-option [value]="opt">{{opt.nameW}}</mat-option>
           </ng-container>
           <ng-container *ngIf="opt.header">
-            <mat-optgroup (click)="toggle(i)">
-              <i *ngIf="i === activeClassIndex" class="fas fa-chevron-down"></i><i *ngIf="i !== activeClassIndex" class="expand-option-group fas fa-chevron-right"></i> {{opt.nameW}}
-              <mat-option [class.active]="i === activeClassIndex" *ngFor="let child of opt.children"
+            <mat-optgroup (click)="toggle(opt)">
+              <i *ngIf="opt.active" class="fas fa-chevron-down"></i><i *ngIf="!opt.active" class="expand-option-group fas fa-chevron-right"></i> {{opt.nameW}}
+              <mat-option [class.active]="opt.active" *ngFor="let child of opt.children"
                 [value]="child" (click)="stopProp($event)">{{child.nameW}}</mat-option>
             </mat-optgroup>
           </ng-container>
