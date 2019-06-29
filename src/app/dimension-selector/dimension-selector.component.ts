@@ -30,6 +30,7 @@ export class DimensionSelectorComponent implements OnInit, AfterViewInit, OnDest
         this.dimensionsList[el.nativeElement.id] = new Array();
       });
     });
+    console.log('afterviewinit dimensions', this.dimensionsList)
   }
 
   ngOnDestroy() {
@@ -38,6 +39,8 @@ export class DimensionSelectorComponent implements OnInit, AfterViewInit, OnDest
 
   change(event: any) {
     this.dimensionsList[event.source.id] = event.source.value;
+    console.log('dimensionList', this.dimensionsList)
+    console.log('dropdown event', event.source.value);
     this.updateDimensionSelection.emit(this.dimensionsList);
   }
 

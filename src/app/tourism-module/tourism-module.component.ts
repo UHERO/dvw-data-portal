@@ -26,7 +26,7 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
   }
 
   updateDimensions(event: any) {
-    this.selectedDimensions = Object.assign({}, event);
+    this.selectedDimensions = event;
   }
 
   updateFrequency(event: any) {
