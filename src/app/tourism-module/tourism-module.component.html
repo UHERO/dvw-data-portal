@@ -1,3 +1,6 @@
-<app-dimension-selector [selectedModule]="selectedModule" (updateDimensionSelection)="updateDimensions($event)"></app-dimension-selector>
+<a [routerLink]="['/']"><i class="fas fa-arrow-left"></i> Back</a>
+<app-dimension-selector [selectedModule]="selectedModule" (updateDimensionSelection)="updateDimensions($event)">
+</app-dimension-selector>
 <app-frequency-selector (updateFrequencySelection)="updateFrequency($event)"></app-frequency-selector>
-<app-module-table [selectedModule]="selectedModule" [dimensions]="selectedDimensions" [frequency]="selectedFrequency"></app-module-table>
+<app-module-table [selectedModule]="selectedModule" [dimensions]="selectedDimensions" [frequency]="selectedFrequency">
+</app-module-table>
