@@ -143,18 +143,28 @@ export class ModuleTableComponent implements OnInit, OnChanges {
 
   createColumns = (dates: Array<any>) => {
     const tableColumns = [];
-    Object.keys(this.dimensions).forEach(key => tableColumns.push({ title: key, data: key }));
+    Object.keys(this.dimensions).forEach(key => tableColumns.push({ title: this.getDimensionColName(key), data: key }));
+    tableColumns.forEach((col, index) => {
+      if (col.data === 'indicators') {
+        tableColumns.splice(index, 1);
+        tableColumns.unshift(col);
+      }
+    });
     dates.forEach((date) => {
       tableColumns.push({ title: date.tableDate, data: 'observations.' + date.tableDate });
     });
     return tableColumns;
   }
 
+  getDimensionColName = (key: string) => {
+    const dimension = this._helper.dimensions.find(d => d.key === key);
+    return dimension ? dimension.tableName : key;
+  }
+
   formatSeriesData = (series: any, dates: Array<any>) => {
     series.series.forEach((serie) => {
       this.identifySeriesColumns(serie);
       serie['dimensions'] = this.dimensions;
-      //serie['observations'] = {};
       let results = {}
       dates.forEach((date) => {
         results[date.tableDate] = ' ';

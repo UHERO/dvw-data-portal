@@ -7,6 +7,14 @@ export class HelperService {
 
   constructor() { }
 
+  dimensions = [
+    { key: 'categories', tableName: 'category' },
+    { key: 'characteristics', tableName: 'characteristic' },
+    { key: 'destinations', tableName: 'destination' },
+    { key: 'indicators', tableName: 'indicator' },
+    { key: 'markets', tableName: 'market' },
+  ];
+
   categoryDateArray(selectedDates, selectedFreqs: Array<string>) {
     // Dates used in table header
     const dateArray = [];
