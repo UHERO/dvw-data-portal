@@ -24,15 +24,10 @@ export class ModuleTableComponent implements OnInit, OnChanges {
   dimensionsSource: Subject<any>;
   firstObservation: string;
   lastObservation: string;
-  dateArray: Array<any>;
-  noData: boolean = false;
+  noData: boolean = true;
   datesSelected: DatesSelected;
   tableData: Array<any>;
   invalidDates: string;
-  //dimensions;
-  //@Input() dateArray;
-  //@Input() tableData;
-  //@Input() datesSelected;
   private tableWidget: any;
 
   constructor(private apiService: DvwApiService, private _helper: HelperService) { }
@@ -40,7 +35,7 @@ export class ModuleTableComponent implements OnInit, OnChanges {
   ngOnInit() { }
 
   ngOnChanges() {
-    const tableColumns = [];
+    let tableColumns = [];
     let series;
     let allDimensionsSelected = false;
     if (this.dimensions && Object.keys(this.dimensions).length) {
@@ -50,11 +45,8 @@ export class ModuleTableComponent implements OnInit, OnChanges {
     }
     if (allDimensionsSelected && this.frequency && !this.invalidDates) {
       const apiParam = this.formatApiParam(this.dimensions);
-      const freq = this.frequency
       this.apiService.getSeries(this.selectedModule, apiParam, this.frequency).subscribe((series) => {
-        Object.keys(this.dimensions).forEach(key => tableColumns.push({ title: key, data: key, className: 'td-left' }));
         if (series) {
-          this.noData = false;
           this.datesSelected = this.datesSelected ? this.datesSelected : <DatesSelected>{};
           this.datesSelected.startDate = series.observationStart;
           this.datesSelected.endDate = series.observationEnd;
@@ -65,27 +57,15 @@ export class ModuleTableComponent implements OnInit, OnChanges {
           if (this.frequency === 'M') {
             this._helper.monthsRange(this.datesSelected);
           }
-          this.dateArray = this._helper.categoryDateArray(this.datesSelected, [this.frequency]);
-          series.series.forEach((serie) => {
-            this.identifySeriesColumns(serie);
-            serie['dimensions'] = this.dimensions;
-            let results = {}
-            this.dateArray.forEach((date) => {
-              results[date.tableDate] = ' ';
-              const dateExists = serie.dates.indexOf(date.date);
-              if (dateExists > -1) {
-                results[date.tableDate] = serie.values[dateExists] === Infinity ? ' ' : serie.values[dateExists].toLocaleString('en-US');
-              }
-            });
-            serie['observations'] = results;
-          });
-          this.dateArray.forEach((date) => {
-            tableColumns.push({ title: date.tableDate, data: 'observations.' + date.tableDate, className: 'td-right' });
-          });
-          this.tableData = series.series;
+          const dateArray = this._helper.categoryDateArray(this.datesSelected, [this.frequency]);
+          const formattedSeries = this.formatSeriesData(series, dateArray);
+          tableColumns = this.createColumns(dateArray);
+          this.tableData = formattedSeries;
           this.createDatatable(tableColumns, this.tableData);
+          this.noData = false;
         }
         if (!series) {
+          tableColumns = this.createColumns([]);
           this.createDatatable(tableColumns, []);
           this.noData = true;
         }
@@ -161,17 +141,41 @@ export class ModuleTableComponent implements OnInit, OnChanges {
     this.updateDatatable(this.datesSelected, this.frequency, this.tableData);
   }
 
+  createColumns = (dates: Array<any>) => {
+    const tableColumns = [];
+    Object.keys(this.dimensions).forEach(key => tableColumns.push({ title: key, data: key }));
+    dates.forEach((date) => {
+      tableColumns.push({ title: date.tableDate, data: 'observations.' + date.tableDate });
+    });
+    return tableColumns;
+  }
+
+  formatSeriesData = (series: any, dates: Array<any>) => {
+    series.series.forEach((serie) => {
+      this.identifySeriesColumns(serie);
+      serie['dimensions'] = this.dimensions;
+      //serie['observations'] = {};
+      let results = {}
+      dates.forEach((date) => {
+        results[date.tableDate] = ' ';
+        const dateExists = serie.dates.indexOf(date.date);
+        if (dateExists > -1) {
+          results[date.tableDate] = serie.values[dateExists] === Infinity ? ' ' : serie.values[dateExists].toLocaleString('en-US');
+        }
+      });
+      serie['observations'] = results;
+    });
+    return series;
+  }
+
   updateDatatable(datesSelected: DatesSelected, freq: string, tableData: Array<any>) {
     const validDates = this.checkValidDates(this.datesSelected);
     if (validDates) {
       this.invalidDates = null;
       const newDateArray = this._helper.categoryDateArray(datesSelected, [freq]);
-      const newColumns = [];
-      Object.keys(this.dimensions).forEach(key => newColumns.push({ title: key, data: key }));
-      newDateArray.forEach((date) => {
-        newColumns.push({ title: date.tableDate, data: 'observations.' + date.tableDate });
-      });
-      this.createDatatable(newColumns, tableData);  
+      const newColumns = this.createColumns(newDateArray);
+      const newTableData = this.formatSeriesData(tableData, newDateArray);
+      this.createDatatable(newColumns, newTableData);
     }
     if (!validDates) {
       this.invalidDates = '*Invalid date selection';
@@ -194,25 +198,31 @@ export class ModuleTableComponent implements OnInit, OnChanges {
     return valid;
   }
 
-  createDatatable(tableColumns: Array<any>, tableData: Array<any>) {
+  createDatatable(tableColumns: Array<any>, tableData: any) {
     const moduleTable: any = $('#module-table');
     if (this.tableWidget) {
       // Destroy table if table has already been initialized
       this.tableWidget.clear().destroy();
       moduleTable.empty();
     }
+    const fixedColumns = Object.keys(this.dimensions);
     this.tableWidget = moduleTable.DataTable({
-      data: tableData,
+      data: tableData.series,
       dom: 'Bt',
       columns: tableColumns,
       columnDefs: [
-        { 'className': 'td-right', 'targets': 'td-right',
-          'render': function(data, type, row, meta) {
+        {
+          'className': 'td-right', 'targets': 'td-right',
+          'render': function (data, type, row, meta) {
             // If no data is available for a given year, return an empty string
             return data === undefined ? ' ' : data;
           }
         }
       ],
+      fixedColumns: {
+        // Fixed columns prevents emptyTable language from being displayed
+        leftColumns: tableData.length ? fixedColumns.length : ''
+      },
       scrollX: true,
       paging: false,
       searching: false,
@@ -239,6 +249,108 @@ export class ModuleTableComponent implements OnInit, OnChanges {
           exportOptions: {
             columns: ':visible'
           },
+          customize: function (doc) {
+            // Table rows should be divisible by 10
+            // Maintain consistant table width (i.e. add empty strings if row has less than 10 data cells)
+            function rowRightPad(row) {
+              const paddedRow = [];
+              row.forEach((item) => {
+                paddedRow.push(item);
+              });
+              const rowDiff = paddedRow.length % 10;
+              let addString = 10 - rowDiff;
+              while (addString) {
+                paddedRow.push({ text: ' ', style: '' });
+                addString -= 1;
+              }
+              return paddedRow;
+            }
+            function splitTable(array, size) {
+              const result = [];
+              for (let i = 0; i < array.length; i += size) {
+                result.push(array.slice(i, i + size));
+              }
+              return result;
+            }
+            function rightAlign(array) {
+              array.forEach((cell) => {
+                cell.alignment = 'right';
+              });
+            }
+            function noWrap(array) {
+              array.forEach((cell) => {
+                cell.noWrap = true;
+              });
+            }
+            // Get original table object
+            const docContent = doc.content.find(c => c.hasOwnProperty('table'));
+            const currentTable = docContent.table.body;
+            const sources: Array<any> = [];
+            const formattedTable: Array<any> = [];
+            currentTable.forEach((row, index) => {
+              let counter = currentTable.length;
+              // Fixed Columns: Indicator, Area, Units
+              const fixed = [];
+              fixedColumns.forEach((col, index) => {
+                fixed.push(row[index]);
+              });
+              // const indicator = row[0];
+              // const area = row[1];
+              // const units = row[2];
+              // Store source info to append to end of export (include Indicator and Source)
+              // const source = row[row.length - 1];
+              // const sourceCopy = Object.assign({}, source);
+              // let sourceRow = [indicator, sourceCopy];
+              // sourceRow = rowRightPad(sourceRow);
+              // sources.push(sourceRow);
+              // Get data from each original row excluding fixed columns and sources
+              const nonFixedCols = row.slice(fixedColumns.length, row.length - 1);
+              // Split data into groups of arrays with max length == 7
+              const maxLength = fixedColumns.length === 3 ? 5 : 4;
+              const split = splitTable(nonFixedCols, maxLength);
+              for (let i = 0; i < split.length; i++) {
+                // Each group is used as a new row for the formatted tables
+                let newRow = split[i];
+                // Add the fixed columns to each new row
+                // const indicatorCopy = Object.assign({}, indicator);
+                // const areaCopy = Object.assign({}, area);
+                // const unitsCopy = Object.assign({}, units);
+                fixed.forEach((c) => {
+                  let cCopy = Object.assign({}, c);
+                  newRow.unshift(cCopy);
+                  console.log('newRow', newRow)
+                })
+                // newRow.unshift(indicatorCopy, areaCopy, unitsCopy);
+                if (newRow.length < 10) {
+                  newRow = rowRightPad(newRow);
+                }
+                // Right align cell text
+                rightAlign(newRow);
+                noWrap(newRow);
+                // Add new rows to formatted table
+                if (!formattedTable[index]) {
+                  formattedTable[index] = newRow;
+                } else {
+                  formattedTable[index + counter] = newRow;
+                  counter += currentTable.length;
+                }
+              }
+            });
+            // Add sources
+            /* sources.forEach((source) => {
+              // Right align cell text
+              rightAlign(source);
+              formattedTable.push(source);
+            }); */
+            doc.defaultStyle.fontSize = 10;
+            doc.styles.tableHeader.fontSize = 10;
+            docContent.table.dontBreakRows = true;
+            docContent.table.headerRows = 0;
+            docContent.table.body = formattedTable;
+            doc.content.push({
+              text: 'Compiled by Research & Economic Analysis Division, State of Hawaii Department of Business, Economic Development and Tourism. For more information, please visit: http://dbedt.hawaii.gov/economic',
+            });
+          }
         }, {
           extend: 'print',
           text: '<i class="fas fa-print" aria-hidden="true" title="Print"></i>',
