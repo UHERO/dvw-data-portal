@@ -308,7 +308,7 @@ export class ModuleTableComponent implements OnInit, OnChanges {
               const nonFixedCols = row.slice(fixedColumns.length, row.length);
               // Split data into groups of arrays with max length == 7
               const maxLength = fixedColumns.length === 3 ? 5 : 4;
-              const split = splitTable(nonFixedCols, 7);
+              const split = splitTable(nonFixedCols, maxLength);
               for (let i = 0; i < split.length; i++) {
                 // Each group is used as a new row for the formatted tables
                 let newRow = split[i];

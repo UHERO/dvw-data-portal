@@ -8,11 +8,11 @@ export class HelperService {
   constructor() { }
 
   dimensions = [
-    { key: 'categories', tableName: 'category' },
-    { key: 'characteristics', tableName: 'characteristic' },
-    { key: 'destinations', tableName: 'destination' },
-    { key: 'indicators', tableName: 'indicator' },
-    { key: 'markets', tableName: 'market' },
+    { key: 'categories', tableName: 'Category' },
+    { key: 'characteristics', tableName: 'Characteristic' },
+    { key: 'destinations', tableName: 'Destination' },
+    { key: 'indicators', tableName: 'Indicator' },
+    { key: 'markets', tableName: 'Market' },
   ];
 
   categoryDateArray(selectedDates, selectedFreqs: Array<string>) {
