@@ -16,6 +16,9 @@ export class DimensionSelectorComponent implements OnInit, AfterViewInit, OnDest
   @ViewChildren('dimension', { read: ElementRef }) dimensions: QueryList<ElementRef>;
   dimensionsList = {};
   activeClassIndex: any;
+  optgroupExpand = String.fromCharCode(0xf0fe);
+  optgroupCollapse = String.fromCharCode(0xf146);
+  selectedDimensions = [];
 
   constructor(private apiService: DvwApiService, private _helper: HelperService) { }
 
@@ -32,14 +35,28 @@ export class DimensionSelectorComponent implements OnInit, AfterViewInit, OnDest
         }
       });
     });
+    console.log('dimensionsList', this.dimensionsList)
   }
 
   ngOnDestroy() {
     this.updateDimensionSelection.emit({});
   }
 
-  change(event: any) {
-    this.dimensionsList[event.source.id] = event.source.value;
+  change(event: any, selector: string) {
+    console.log('test', event)
+    //this.dimensionsList[selector] = event.source.value;
+    if (!this.dimensionsList[selector].length) {
+      this.dimensionsList[selector].push(event[0]);
+    } else {
+      const inList = this.dimensionsList[selector].findIndex(d => d.handle === event[0].handle);
+      console.log('inList', inList)
+      if (inList < 0 ) {
+        this.dimensionsList[selector].push(event[0]);
+      } else {
+        this.dimensionsList[selector].splice(inList, 1);
+      }
+    }
+    console.log('dimensionSelector', this.dimensionsList)
     this.updateDimensionSelection.emit(this.dimensionsList);
   }
 
