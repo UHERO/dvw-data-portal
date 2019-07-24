@@ -12,21 +12,25 @@
     }
     
     select {
+        //-webkit-appearance: none;
         width: 220px;
         height: 200px;
+        font-size: 0.8em;
+        padding: 5px;
     
         option {
-            font-size: 0.8em;
             padding: 2px 0;
             white-space: normal;
         }
     
         optgroup {
             font-family: 'Font Awesome 5 Free', sans-serif;
-            font-size: 0.8em;
+            font-size: unset;
             padding: 2px 0;
             
             option {
+                -webkit-appearance: none;
+                appearance: none;
                 display: none;
     
                 &.active {
