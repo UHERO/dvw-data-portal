@@ -1,31 +1,40 @@
-label {
-    display: block;
-    text-transform: capitalize;
-    margin-top: 1rem;
-}
+#dimension-selectors {
+    height: 440px;
+    overflow: auto;
+    margin-left: 5px;
 
-select {
-    width: 245px;
-    height: 200px;
-
-    option {
+    label {
+        display: block;
         font-size: 0.9em;
-        padding: 2px 0;
-        white-space: normal;
+        font-weight: bold;
+        text-transform: capitalize;
+        margin-top: 1rem;
     }
-
-    optgroup {
-        font-family: 'Font Awesome 5 Free', sans-serif;
-        font-size: 0.9em;
-        padding: 2px 0;
-        
+    
+    select {
+        width: 220px;
+        height: 200px;
+    
         option {
-            display: none;
-
-            &.active {
-                font-size: unset;
-                display: flex !important;
+            font-size: 0.8em;
+            padding: 2px 0;
+            white-space: normal;
+        }
+    
+        optgroup {
+            font-family: 'Font Awesome 5 Free', sans-serif;
+            font-size: 0.8em;
+            padding: 2px 0;
+            
+            option {
+                display: none;
+    
+                &.active {
+                    font-size: unset;
+                    display: flex !important;
+                }
             }
         }
     }
+    
 }

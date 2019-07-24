@@ -1,6 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from "@angular/router";
 import { Subscription } from 'rxjs';
+import { DvwApiService } from '../dvw-api.service';
+import { DatesSelected } from '../dates-selected';
+import { HelperService } from '../helper.service';
 
 @Component({
   selector: 'app-tourism-module',
@@ -11,9 +14,15 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
   selectedModule: string;
   selectedDimensions: any;
   selectedFrequency: string;
-  routeSub: Subscription
+  routeSub: Subscription;
+  datesSelected: DatesSelected;
+  tableData: Array<any>;
+  tableColumns: Array<any> = [];
+  noData: boolean = true;
+  invalidDates: string;
+  displayInstructions: boolean = true;
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private route: ActivatedRoute, private apiService: DvwApiService, private _helper: HelperService) { }
 
   ngOnInit() {
     this.routeSub = this.route.paramMap.subscribe((params) => {
@@ -27,9 +36,185 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
 
   updateDimensions(event: any) {
     this.selectedDimensions = Object.assign({}, event);
+    this.checkUserSelections(this.selectedDimensions, this.selectedFrequency);
   }
 
   updateFrequency(event: any) {
     this.selectedFrequency = event;
+    this.checkUserSelections(this.selectedDimensions, this.selectedFrequency);
+  }
+
+  checkUserSelections(dimensions: any, frequency: string) {
+    let allDimensionsSelected = false;
+    if (dimensions && Object.keys(dimensions).length) {
+      allDimensionsSelected = Object.keys(dimensions).every((key) => {
+        return dimensions[key].length > 0
+      }) === true;
+    }
+    if (allDimensionsSelected && frequency && !this.invalidDates) {
+      this.displayInstructions = false;
+      this.getSeriesData(dimensions, frequency);
+    }
+  }
+
+  getSeriesData(dimensions: any, frequency: string) {
+    const apiParam = this.formatApiParam(dimensions);
+    this.apiService.getSeries(this.selectedModule, apiParam, frequency).subscribe((series) => {
+      if (series) {
+        this.datesSelected = this.datesSelected ? this.datesSelected : <DatesSelected>{};
+        this.datesSelected.startDate = series.observationStart;
+        this.datesSelected.endDate = series.observationEnd;
+        this._helper.yearsRange(this.datesSelected);
+        if (frequency === 'Q') {
+          this._helper.quartersRange(this.datesSelected);
+        }
+        if (frequency === 'M') {
+          this._helper.monthsRange(this.datesSelected);
+        }
+        // leaving second argument as an array in case frequency needs to be a multiple select
+        const dateArray = this._helper.categoryDateArray(this.datesSelected, [frequency]);
+        const formattedSeries = this.formatSeriesData(series, dateArray, dimensions);
+        this.tableColumns = this.createColumns(dateArray, dimensions);
+        this.tableData = formattedSeries;
+        this.noData = false;
+      }
+      if (!series) {
+        this.tableColumns = this.createColumns([], dimensions);
+        this.tableData = [];
+        this.noData = true;
+      }
+    });
+  }
+
+  formatApiParam = (dimensions: any) => {
+    let apiParam = '';
+    const dimensionKeys = Object.keys(dimensions);
+    dimensionKeys.forEach((key, index) => {
+      apiParam += `${key.substring(0, 1)}=`;
+      dimensions[key].forEach((opt, index) => {
+        apiParam += `${opt.handle}`;
+        if (index !== dimensions[key].length - 1) {
+          apiParam += `,`;
+        }
+      });
+      if (index !== dimensionKeys.length - 1) {
+        apiParam += `&`;
+      }
+    });
+    return apiParam;
+  }
+
+  formatSeriesData = (series: any, dates: Array<any>, dimensions: any) => {
+    series.series.forEach((serie) => {
+      this.identifySeriesColumns(serie, dimensions);
+      serie['dimensions'] = dimensions;
+      let results = {}
+      dates.forEach((date) => {
+        results[date.tableDate] = ' ';
+        const dateExists = serie.dates.indexOf(date.date);
+        if (dateExists > -1) {
+          results[date.tableDate] = serie.values[dateExists] === Infinity ? ' ' : serie.values[dateExists].toLocaleString('en-US');
+        }
+      });
+      serie['observations'] = results;
+    });
+    return series;
+  }
+
+  identifySeriesColumns(serie: any, dimensions: any) {
+    serie.columns.forEach((col) => {
+      this.findColumnDimension(serie, dimensions, col);
+    });
+  }
+
+  findColumnDimension(serie: any, dimensions: any, column: string) {
+    Object.keys(dimensions).forEach((key) => {
+      this.matchDimensionAndColumn(dimensions, key, column, serie);
+    });
+  }
+
+  matchDimensionAndColumn(dimensions: any, key: string, column: string, serie: any) {
+    dimensions[key].forEach((opt) => {
+      if (opt.handle === column) {
+        serie[key] = opt.nameW;
+      }
+    });
+  }
+
+  createColumns = (dates: Array<any>, dimensions: any) => {
+    const tableColumns = [];
+    Object.keys(dimensions).forEach(key => tableColumns.push({ title: this.getDimensionColName(key), data: key }));
+    tableColumns.forEach((col, index) => {
+      if (col.data === 'indicators') {
+        tableColumns.splice(index, 1);
+        tableColumns.unshift(col);
+      }
+    });
+    dates.forEach((date) => {
+      tableColumns.push({ title: date.tableDate, data: 'observations.' + date.tableDate });
+    });
+    return tableColumns;
+  }
+
+  getDimensionColName = (key: string) => {
+    const dimension = this._helper.dimensions.find(d => d.key === key);
+    return dimension ? dimension.tableName : key;
+  }
+
+  updateStartYear(event: any) {
+    this.datesSelected.selectedStartYear = event;
+    this.updateDatatable(this.datesSelected, this.selectedFrequency, this.tableData);
+  }
+
+  updateEndYear(event: any) {
+    this.datesSelected.selectedEndYear = event;
+    this.updateDatatable(this.datesSelected, this.selectedFrequency, this.tableData);
+  }
+
+  updateStartQuarter(event: any) {
+    this.datesSelected.selectedStartQuarter = event;
+    this.updateDatatable(this.datesSelected, this.selectedFrequency, this.tableData);
+  }
+
+  updateEndQuarter(event: any) {
+    this.datesSelected.selectedEndQuarter = event;
+    this.updateDatatable(this.datesSelected, this.selectedFrequency, this.tableData);
+  }
+
+  updateStartMonth(event: any) {
+    this.datesSelected.selectedStartMonth = event;
+    this.updateDatatable(this.datesSelected, this.selectedFrequency, this.tableData);
+  }
+
+  updateEndMonth(event: any) {
+    this.datesSelected.selectedEndMonth = event;
+    this.updateDatatable(this.datesSelected, this.selectedFrequency, this.tableData);
+  }
+
+  updateDatatable(datesSelected: DatesSelected, freq: string, tableData: Array<any>) {
+    const validDates = this.checkValidDates(this.datesSelected);
+    if (validDates) {
+      this.invalidDates = null;
+      this.checkUserSelections(this.selectedDimensions, this.selectedFrequency);
+    }
+    if (!validDates) {
+      this.invalidDates = '*Invalid date selection';
+    }
+  }
+
+  checkValidDates = (dates: DatesSelected) => {
+    let valid = true;
+    if (dates.selectedStartYear > dates.selectedEndYear) {
+      valid = false;
+    }
+    if (dates.selectedStartYear === dates.selectedEndYear) {
+      if (dates.selectedStartQuarter > dates.selectedEndQuarter) {
+        valid = false;
+      }
+      if (dates.selectedStartMonth > dates.selectedEndMonth) {
+        valid = false;
+      }
+    }
+    return valid;
   }
 }

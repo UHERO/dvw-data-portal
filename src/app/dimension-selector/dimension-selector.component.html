@@ -1,11 +1,11 @@
-<div *ngIf="selectors$ | async as selectors; else loading">
+<div id="dimension-selectors" *ngIf="selectors$ | async as selectors; else loading">
   <ng-template ngFor let-selector [ngForOf]="selectors">
     <label>{{selector.name}}</label>
-    <select [name]="selector.name" class="form-control" [(ngModel)]="selectedOptions[selector.name]"
+    <select #dimension [name]="selector.name" class="form-control" [(ngModel)]="selectedOptions[selector.name]"
       multiple [id]="selector.name">
       <ng-container *ngFor="let opt of selector.options; let i = index;">
         <ng-container *ngIf="!opt.children">
-          <option [ngValue]="opt" (mousedown)="false" (click)="optSelectMouseDown($event, opt, selector.name)">
+          <option [ngValue]="opt" (mousedown)="false" (click)="optSelectMouseDown($event, opt, selector.name, selectors)">
             {{opt.nameW}}</option>
         </ng-container>
         <ng-container *ngIf="opt.header">

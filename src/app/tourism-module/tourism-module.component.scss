@@ -1,0 +1,38 @@
+@import 'abstracts/variables';
+
+#wrapper {
+    width: 960px;
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    #sidebar {
+        border-right: 1px solid $link-color;
+        width: 250px;
+        display: inline-block;
+    }
+
+    #content-col {
+        width: 705px;
+        display: inline-block;
+        vertical-align: top;
+
+        #instructions {
+            font-size: 0.9em;
+            margin-left: 10px;
+            width: 80%;
+        }
+
+        #back-link {
+            float: right;
+            margin-bottom: -1.75em;
+        }
+    }
+
+    #selectors {
+        margin-left: 5px;
+
+        .invalid-dates {
+            display: inline-block;
+        }
+    }
+}

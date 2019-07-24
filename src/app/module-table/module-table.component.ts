@@ -1,7 +1,4 @@
 import { Component, OnInit, OnChanges, Input } from '@angular/core';
-import { DvwApiService } from '../dvw-api.service';
-import { HelperService } from '../helper.service';
-import { DatesSelected } from '../dates-selected';
 
 import * as $ from 'jquery';
 import 'datatables.net';
@@ -19,193 +16,19 @@ import { Subject } from 'rxjs';
 })
 export class ModuleTableComponent implements OnInit, OnChanges {
   @Input() dimensions: any;
-  @Input() frequency: string;
-  @Input() selectedModule: string;
-  dimensionsSource: Subject<any>;
-  firstObservation: string;
-  lastObservation: string;
-  noData: boolean = true;
-  datesSelected: DatesSelected;
-  tableData: Array<any>;
-  invalidDates: string;
+  @Input() tableData: any;
+  @Input() tableColumns: any;
+  @Input() dateArray: Array<any>;
   private tableWidget: any;
 
-  constructor(private apiService: DvwApiService, private _helper: HelperService) { }
+  constructor() { }
 
   ngOnInit() { }
 
   ngOnChanges() {
-    let tableColumns = [];
-    let series;
-    let allDimensionsSelected = false;
-    if (this.dimensions && Object.keys(this.dimensions).length) {
-      allDimensionsSelected = Object.keys(this.dimensions).every((key) => {
-        return this.dimensions[key].length > 0
-      }) === true;
+    if (this.tableColumns && this.tableData) {
+      this.createDatatable(this.tableColumns, this.tableData);
     }
-    if (allDimensionsSelected && this.frequency && !this.invalidDates) {
-      const apiParam = this.formatApiParam(this.dimensions);
-      this.apiService.getSeries(this.selectedModule, apiParam, this.frequency).subscribe((series) => {
-        if (series) {
-          this.datesSelected = this.datesSelected ? this.datesSelected : <DatesSelected>{};
-          this.datesSelected.startDate = series.observationStart;
-          this.datesSelected.endDate = series.observationEnd;
-          this._helper.yearsRange(this.datesSelected);
-          if (this.frequency === 'Q') {
-            this._helper.quartersRange(this.datesSelected);
-          }
-          if (this.frequency === 'M') {
-            this._helper.monthsRange(this.datesSelected);
-          }
-          const dateArray = this._helper.categoryDateArray(this.datesSelected, [this.frequency]);
-          const formattedSeries = this.formatSeriesData(series, dateArray);
-          tableColumns = this.createColumns(dateArray);
-          this.tableData = formattedSeries;
-          this.createDatatable(tableColumns, this.tableData);
-          this.noData = false;
-        }
-        if (!series) {
-          tableColumns = this.createColumns([]);
-          this.createDatatable(tableColumns, []);
-          this.noData = true;
-        }
-      });
-    }
-  }
-
-  formatApiParam = (dimensions: any) => {
-    let apiParam = '';
-    const dimensionKeys = Object.keys(dimensions);
-    dimensionKeys.forEach((key, index) => {
-      apiParam += `${key.substring(0, 1)}=`;
-      dimensions[key].forEach((opt, index) => {
-        apiParam += `${opt.handle}`;
-        if (index !== dimensions[key].length - 1) {
-          apiParam += `,`;
-        }
-      });
-      if (index !== dimensionKeys.length - 1) {
-        apiParam += `&`;
-      }
-    });
-    return apiParam;
-  }
-
-  identifySeriesColumns(serie: any) {
-    serie.columns.forEach((col) => {
-      this.findColumnDimension(serie, this.dimensions, col);
-    });
-  }
-
-  findColumnDimension(serie: any, dimensions: any, column: string) {
-    Object.keys(dimensions).forEach((key) => {
-      this.matchDimensionAndColumn(dimensions, key, column, serie);
-    });
-  }
-
-  matchDimensionAndColumn(dimensions: any, key: string, column: string, serie: any) {
-    dimensions[key].forEach((opt) => {
-      if (opt.handle === column) {
-        serie[key] = opt.nameW;
-      }
-    });
-  }
-
-  updateStartYear(event: any) {
-    this.datesSelected.selectedStartYear = event;
-    this.updateDatatable(this.datesSelected, this.frequency, this.tableData);
-  }
-
-  updateEndYear(event: any) {
-    this.datesSelected.selectedEndYear = event;
-    this.updateDatatable(this.datesSelected, this.frequency, this.tableData);
-  }
-
-  updateStartQuarter(event: any) {
-    this.datesSelected.selectedStartQuarter = event;
-    this.updateDatatable(this.datesSelected, this.frequency, this.tableData);
-  }
-
-  updateEndQuarter(event: any) {
-    this.datesSelected.selectedEndQuarter = event;
-    this.updateDatatable(this.datesSelected, this.frequency, this.tableData);
-  }
-
-  updateStartMonth(event: any) {
-    this.datesSelected.selectedStartMonth = event;
-    this.updateDatatable(this.datesSelected, this.frequency, this.tableData);
-  }
-
-  updateEndMonth(event: any) {
-    this.datesSelected.selectedEndMonth = event;
-    this.updateDatatable(this.datesSelected, this.frequency, this.tableData);
-  }
-
-  createColumns = (dates: Array<any>) => {
-    const tableColumns = [];
-    Object.keys(this.dimensions).forEach(key => tableColumns.push({ title: this.getDimensionColName(key), data: key }));
-    tableColumns.forEach((col, index) => {
-      if (col.data === 'indicators') {
-        tableColumns.splice(index, 1);
-        tableColumns.unshift(col);
-      }
-    });
-    dates.forEach((date) => {
-      tableColumns.push({ title: date.tableDate, data: 'observations.' + date.tableDate });
-    });
-    return tableColumns;
-  }
-
-  getDimensionColName = (key: string) => {
-    const dimension = this._helper.dimensions.find(d => d.key === key);
-    return dimension ? dimension.tableName : key;
-  }
-
-  formatSeriesData = (series: any, dates: Array<any>) => {
-    series.series.forEach((serie) => {
-      this.identifySeriesColumns(serie);
-      serie['dimensions'] = this.dimensions;
-      let results = {}
-      dates.forEach((date) => {
-        results[date.tableDate] = ' ';
-        const dateExists = serie.dates.indexOf(date.date);
-        if (dateExists > -1) {
-          results[date.tableDate] = serie.values[dateExists] === Infinity ? ' ' : serie.values[dateExists].toLocaleString('en-US');
-        }
-      });
-      serie['observations'] = results;
-    });
-    return series;
-  }
-
-  updateDatatable(datesSelected: DatesSelected, freq: string, tableData: Array<any>) {
-    const validDates = this.checkValidDates(this.datesSelected);
-    if (validDates) {
-      this.invalidDates = null;
-      const newDateArray = this._helper.categoryDateArray(datesSelected, [freq]);
-      const newColumns = this.createColumns(newDateArray);
-      const newTableData = this.formatSeriesData(tableData, newDateArray);
-      this.createDatatable(newColumns, newTableData);
-    }
-    if (!validDates) {
-      this.invalidDates = '*Invalid date selection';
-    }
-  }
-
-  checkValidDates = (dates: DatesSelected) => {
-    let valid = true;
-    if (dates.selectedStartYear > dates.selectedEndYear) {
-      valid = false;
-    }
-    if (dates.selectedStartYear === dates.selectedEndYear) {
-      if (dates.selectedStartQuarter > dates.selectedEndQuarter) {
-        valid = false;
-      }
-      if (dates.selectedStartMonth > dates.selectedEndMonth) {
-        valid = false;
-      }
-    }
-    return valid;
   }
 
   createDatatable(tableColumns: Array<any>, tableData: any) {
@@ -222,7 +45,10 @@ export class ModuleTableComponent implements OnInit, OnChanges {
       columns: tableColumns,
       columnDefs: [
         {
-          'className': 'td-right', 'targets': 'td-right',
+          'className': 'td-left', 'targets': Array.apply(null, { length: fixedColumns.length }).map(Number.call, Number)
+        },
+        {
+          'className': 'td-right', 'targets': '_all',
           'render': function (data, type, row, meta) {
             // If no data is available for a given year, return an empty string
             return data === undefined ? ' ' : data;
@@ -231,8 +57,9 @@ export class ModuleTableComponent implements OnInit, OnChanges {
       ],
       fixedColumns: {
         // Fixed columns prevents emptyTable language from being displayed
-        leftColumns: tableData.length ? fixedColumns.length : ''
+        leftColumns: !tableData.series ? '' : fixedColumns.length
       },
+      scrollY: '375px',
       scrollX: true,
       paging: false,
       searching: false,
@@ -347,7 +174,7 @@ export class ModuleTableComponent implements OnInit, OnChanges {
           exportOptions: {
             columns: ':visible'
           },
-          customize: function(win) {
+          customize: function (win) {
             function sortObsDates(nonSorted, sorted) {
               const result = [];
               for (let i = 0; i < sorted.length; i++) {
@@ -361,7 +188,7 @@ export class ModuleTableComponent implements OnInit, OnChanges {
               for (let i = 0; i < array.length; i += size) {
                 result.push(array.slice(i, i + size));
               }
-               return result;
+              return result;
             }
             // Get array of dates from table
             const dates = tableColumns.slice(fixedColumns.length, tableColumns.length);
