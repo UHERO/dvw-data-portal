@@ -1,10 +1,44 @@
-.mat-optgroup {
-    .mat-option {
-        display: none;
+@import 'abstracts/variables';
 
-        &.active {
-            display: flex !important;
-            padding-left: 35px
+#dimension-selectors {
+    height: 440px;
+    overflow: auto;
+    margin-left: 5px;
+
+    label {
+        display: block;
+        font-size: 0.9em;
+        font-weight: bold;
+        text-transform: capitalize;
+        margin-top: 1rem;
+    }
+    
+    ul {
+        border: 1px solid $light-gray;
+        font-family: 'Font Awesome 5 Free', sans-serif;
+        list-style: none;
+        width: 220px;
+        height: 200px;
+        overflow-y: auto;
+        font-size: 0.9em;
+        padding: 0;
+        text-indent: 10px;
+        //padding: 5px;
+        //-moz-appearance: none;
+        //-webkit-appearance: none;
+        // appearance: none;
+    
+        li.group-expanded {
+            padding-left: 15px;
+
+            li.selected {
+                background-color: $highlight-color
+            }    
+        }
+
+        li.selected {
+            background-color: $highlight-color
         }
     }
+    
 }

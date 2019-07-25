@@ -1,7 +1,5 @@
 import { Component, OnInit, AfterViewInit, OnDestroy, Input, Output, EventEmitter, ViewChildren, ElementRef, QueryList } from '@angular/core';
 import { DvwApiService } from '../dvw-api.service';
-import { HelperService } from '../helper.service';
-import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-dimension-selector',
@@ -11,23 +9,24 @@ import { FormControl } from '@angular/forms';
 export class DimensionSelectorComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() selectedModule: string;
   @Output() updateDimensionSelection: EventEmitter<any> = new EventEmitter();
-  dimensionSelector = new FormControl();
+  @ViewChildren('dimension', { read: ElementRef }) selects: QueryList<ElementRef>;
   selectors$;
-  @ViewChildren('dimension', { read: ElementRef }) dimensions: QueryList<ElementRef>;
-  dimensionsList = {};
   activeClassIndex: any;
+  optgroupExpand = String.fromCharCode(0xf0fe);
+  optgroupCollapse = String.fromCharCode(0xf146);
+  selectedOptions = {};
 
-  constructor(private apiService: DvwApiService, private _helper: HelperService) { }
+  constructor(private apiService: DvwApiService) { }
 
   ngOnInit() {
     this.selectors$ = this.apiService.getDimensionsWithOptions(this.selectedModule);
   }
 
   ngAfterViewInit() {
-    const dimSubscription = this.dimensions.changes.subscribe(() => {
-      this.dimensions.toArray().forEach((el, index) => {
-        this.dimensionsList[el.nativeElement.id] = new Array();
-        if (index === this.dimensions.toArray().length - 1) {
+    const dimSubscription = this.selects.changes.subscribe(() => {
+      this.selects.toArray().forEach((el, index) => {
+        this.selectedOptions[el.nativeElement.id] = new Array();
+        if (index === this.selects.toArray().length - 1) {
           dimSubscription.unsubscribe();
         }
       });
@@ -38,22 +37,24 @@ export class DimensionSelectorComponent implements OnInit, AfterViewInit, OnDest
     this.updateDimensionSelection.emit({});
   }
 
-  change(event: any) {
-    this.dimensionsList[event.source.id] = event.source.value;
-    this.updateDimensionSelection.emit(this.dimensionsList);
+  optSelectMouseDown = (event: any, opt: any, name: string) => {
+    if (!this.selectedOptions[name]) {
+      this.selectedOptions[name] = [];
+    }
+    const index = this.selectedOptions[name].findIndex(o => o.handle === opt.handle);
+    if (index > -1) {
+      this.selectedOptions[name].splice(index, 1);
+      opt.selected = false;
+    } else {
+      this.selectedOptions[name].push(opt);
+      opt.selected = true;
+    }
+    this.updateDimensionSelection.emit(this.selectedOptions);
+    return false;
   }
 
-  toggle(group: any) {
-    group.active = !group.active
-  }
-
-  stopProp(event: any) {
+  toggle(event: any, group: any) {
     event.stopPropagation();
-  }
-
-  checkAllDimensionsSelected = (dimensions) => {
-    return Object.keys(dimensions).every((key) => {
-      return dimensions[key].length > 0
-    }) === true;
+    group.active = !group.active
   }
 }

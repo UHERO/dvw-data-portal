@@ -15,7 +15,6 @@ export class YearSelectorComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    //console.log('year selector dates', this.dates)
   }
 
   changeYear(event) {

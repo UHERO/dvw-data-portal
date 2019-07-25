@@ -48,6 +48,17 @@ export class DvwApiService {
 
   getDimensionsWithOptions(mod: string) {
     if (this.cachedDimensionOptions[mod]) {
+      this.cachedDimensionOptions[mod].forEach((dim) => {
+        // reset selections after navigating away from module
+        const selected = dim.options.filter(opt => opt.selected);
+        const active = dim.options.filter(opt => opt.active);
+        selected.forEach((option) => {
+          dim.options.find(opt => opt.handle === option.handle).selected = false;
+        });
+        active.forEach((option) => {
+          dim.options.find(opt => opt.handle === option.handle).active = false;
+        });
+      });
       return observableOf(this.cachedDimensionOptions[mod]);
     } else {
       const selectors = [];
