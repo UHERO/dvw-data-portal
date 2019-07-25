@@ -1,3 +1,5 @@
+@import 'abstracts/variables';
+
 #dimension-selectors {
     height: 440px;
     overflow: auto;
@@ -11,33 +13,31 @@
         margin-top: 1rem;
     }
     
-    select {
-        //-webkit-appearance: none;
+    ul {
+        border: 1px solid $light-gray;
+        font-family: 'Font Awesome 5 Free', sans-serif;
+        list-style: none;
         width: 220px;
         height: 200px;
-        font-size: 0.8em;
-        padding: 5px;
+        overflow-y: auto;
+        font-size: 0.9em;
+        padding: 0;
+        text-indent: 10px;
+        //padding: 5px;
+        //-moz-appearance: none;
+        //-webkit-appearance: none;
+        // appearance: none;
     
-        option {
-            padding: 2px 0;
-            white-space: normal;
+        li.group-expanded {
+            padding-left: 15px;
+
+            li.selected {
+                background-color: $highlight-color
+            }    
         }
-    
-        optgroup {
-            font-family: 'Font Awesome 5 Free', sans-serif;
-            font-size: unset;
-            padding: 2px 0;
-            
-            option {
-                -webkit-appearance: none;
-                appearance: none;
-                display: none;
-    
-                &.active {
-                    font-size: unset;
-                    display: flex !important;
-                }
-            }
+
+        li.selected {
+            background-color: $highlight-color
         }
     }
     
