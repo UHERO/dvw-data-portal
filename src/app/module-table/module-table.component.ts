@@ -59,7 +59,7 @@ export class ModuleTableComponent implements OnInit, OnChanges {
         // Fixed columns prevents emptyTable language from being displayed
         leftColumns: !tableData.series ? '' : fixedColumns.length
       },
-      scrollY: '375px',
+      scrollY: '100%',
       scrollX: true,
       paging: false,
       searching: false,
