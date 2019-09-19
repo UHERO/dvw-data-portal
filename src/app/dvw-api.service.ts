@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 //import { of as observableOf, Observable, from } from 'rxjs';
 import { forkJoin as observableForkJoin, of as observableOf, Observable } from 'rxjs';
 import { tap, map, mergeMap, switchMap, flatMap } from 'rxjs/operators';
+import { HelperService } from './helper.service';
 const API_URL = environment.apiUrl;
 
 @Injectable({
@@ -14,7 +15,7 @@ export class DvwApiService {
   private cachedDimensionOptions = [];
   private cachedSeries = [];
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private _helper: HelperService) { }
 
   getDimensions(mod: string): any {
     if (this.cachedDimensions[mod]) {
@@ -63,20 +64,23 @@ export class DvwApiService {
     } else {
       const selectors = [];
       let moduleDimensionOptions$ = this.http.get(`${API_URL}/dimensions/${mod}`).pipe(
-        map(mapData),
+        map(response => this.mapDimensionOrder(response, mod)),
         flatMap((dimensions) => 
           observableForkJoin(dimensions.map(d => this.http.get(`${API_URL}/${d}/all/${mod}`).pipe(
             map((res: any) => {
+              console.log(res)
               const mappedResponse = mapDimensionOptions(res);
               const selector = { name: d, options: mappedResponse };
+              console.log('selector', selector)
               selectors.push(selector)
               this.cachedDimensionOptions[mod] = selectors;
+              console.log(selectors)
               moduleDimensionOptions$ = null;
               return selector;
             })
           )))
         )
-      )
+      );
       return moduleDimensionOptions$;
     }
   }
@@ -96,11 +100,17 @@ export class DvwApiService {
     }
   }
 
+  mapDimensionOrder = (response: any, mod: string): any => {
+    const sortedDimensions = [];
+    const order = this._helper.dimensionsOrder.find(module => module.module === mod).order;
+    order.forEach((dim) => {
+      sortedDimensions.push(response.data.find(r => r === dim));
+    });
+    return sortedDimensions;
+  }
 }
 
-function mapData(response): any {
-  return response.data;
-}
+const mapData = response => response.data;
 
 function mapDimensionOptions(response): any {
   const options = response.data;

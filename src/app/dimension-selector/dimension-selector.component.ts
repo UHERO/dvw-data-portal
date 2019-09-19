@@ -15,11 +15,16 @@ export class DimensionSelectorComponent implements OnInit, AfterViewInit, OnDest
   optgroupExpand = String.fromCharCode(0xf0fe);
   optgroupCollapse = String.fromCharCode(0xf146);
   selectedOptions = {};
+  dimensions;
 
   constructor(private apiService: DvwApiService) { }
 
   ngOnInit() {
-    this.selectors$ = this.apiService.getDimensionsWithOptions(this.selectedModule);
+    // this.selectors$ = this.apiService.getDimensionsWithOptions(this.selectedModule);
+    this.selectors$ = this.apiService.getDimensionsWithOptions(this.selectedModule).subscribe((dimensions) => {
+      this.dimensions = dimensions;
+      console.log(dimensions)
+    });
   }
 
   ngAfterViewInit() {
@@ -34,6 +39,7 @@ export class DimensionSelectorComponent implements OnInit, AfterViewInit, OnDest
   }
 
   ngOnDestroy() {
+    this.selectors$.unsubscribe();
     this.updateDimensionSelection.emit({});
   }
 
@@ -56,5 +62,16 @@ export class DimensionSelectorComponent implements OnInit, AfterViewInit, OnDest
   toggle(event: any, group: any) {
     event.stopPropagation();
     group.active = !group.active
+  }
+
+  resetSelections() {
+    Object.keys(this.selectedOptions).forEach((key) =>{
+      this.selectedOptions[key] = [];
+    });
+    this.dimensions.forEach((dim)=> {
+      dim.options.forEach((opt) => {
+        opt.selected = false;
+      });
+    })
   }
 }

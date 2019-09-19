@@ -8,11 +8,19 @@ export class HelperService {
   constructor() { }
 
   dimensions = [
-    { key: 'categories', tableName: 'Category' },
-    { key: 'characteristics', tableName: 'Characteristic' },
-    { key: 'destinations', tableName: 'Destination' },
     { key: 'indicators', tableName: 'Indicator' },
     { key: 'markets', tableName: 'Market' },
+    { key: 'destinations', tableName: 'Destination' },
+    { key: 'categories', tableName: 'Category' },
+    { key: 'characteristics', tableName: 'Characteristic' },
+  ];
+
+  dimensionsOrder = [
+    { module: 'ade', order: ['indicators', 'markets', 'destinations'] },
+    { module: 'airseat', order: ['indicators', 'markets', 'destinations'] },
+    { module: 'hotel', order: ['indicators', 'categories'] },
+    { module: 'char', order: ['groups', 'indicators'] },
+    { module: 'exp', order: ['groups', 'categories', 'indicators'] },
   ];
 
   categoryDateArray(selectedDates, selectedFreqs: Array<string>) {
@@ -28,7 +36,7 @@ export class HelperService {
     const monthSelected = selectedFreqs.indexOf('M') > -1;
     const quarterSelected = selectedFreqs.indexOf('Q') > -1;
     // Check if selectedDates' properties have values set (i.e. date range selectors have been used)
-    const dates = this.checkSelectedDates(selectedDates, monthSelected, startYear, endYear, startMonth, endMonth, q);
+    const dates = this.checkSelectedDates(selectedDates, selectedFreqs[0], monthSelected, startYear, endYear, startMonth, endMonth, q);
     startYear = dates.startYear;
     endYear = dates.endYear;
     startMonth = dates.startMonth;
@@ -88,7 +96,7 @@ export class HelperService {
     return false;
   }
 
-  checkSelectedDates(selectedDates, monthSelected, startYear, endYear, startMonth, endMonth, quarters) {
+  checkSelectedDates(selectedDates, freq, monthSelected, startYear, endYear, startMonth, endMonth, quarters) {
     startYear = selectedDates.selectedStartYear ? +selectedDates.selectedStartYear : startYear;
     endYear = selectedDates.selectedEndYear ? +selectedDates.selectedEndYear : endYear;
     startMonth = selectedDates.selectedStartMonth ? +selectedDates.selectedStartMonth : startMonth;
@@ -96,6 +104,10 @@ export class HelperService {
     if (!monthSelected) {
       startMonth = selectedDates.selectedStartQuarter ? this.setStartMonthQ(quarters, selectedDates, startMonth) : startMonth;
       endMonth = selectedDates.selectedEndQuarter ? this.setEndMonthQ(quarters, selectedDates, endMonth) : endMonth;
+    }
+    if (freq === 'A') {
+      startMonth = 1;
+      endMonth = 1;
     }
     return { startYear: startYear, endYear: endYear, startMonth: startMonth, endMonth: endMonth };
   }

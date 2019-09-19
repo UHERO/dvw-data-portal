@@ -1,4 +1,4 @@
-<div id="dimension-selectors" *ngIf="selectors$ | async as selectors; else loading">
+<div id="dimension-selectors" *ngIf="dimensions as selectors; else loading">
   <ng-template ngFor let-selector [ngForOf]="selectors">
   <label>{{selector.name}}</label>
     <ul #dimension [id]="selector.name">
