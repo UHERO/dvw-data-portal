@@ -22,7 +22,8 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
   tableColumns: Array<any> = [];
   noData: boolean = true;
   invalidDates: string;
-  displayInstructions: boolean = true;
+  displayTable: boolean = false;
+  loading: boolean = false;
   @ViewChild(DimensionSelectorComponent, { static: false })
   public sidebar: DimensionSelectorComponent;
   @ViewChild(FrequencySelectorComponent, { static: false })
@@ -43,10 +44,10 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
   }
 
   clearSelections() {
-    //this.displayTable = false;
+    this.displayTable = false;
     //this.selectedIndicators = [];
     this.datesSelected = null;
-    this.displayInstructions = true;
+    // this.displayInstructions = true;
     this.selectedFrequency = null;
     this.noData = true;
     //this.frequencies = [];
@@ -81,7 +82,8 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
       }) === true;
     }
     if (allDimensionsSelected && frequency && !this.invalidDates) {
-      this.displayInstructions = false;
+      // this.displayInstructions = false;
+      this.loading = true;
       this.getSeriesData(dimensions, frequency);
     }
   }
@@ -112,6 +114,12 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
         this.tableData = [];
         this.noData = true;
       }
+    },
+    (error) => {
+      console.log('get series data error', error);
+    },
+    () => {
+      this.loading = false;
     });
   }
 
@@ -165,7 +173,7 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
   matchDimensionAndColumn(dimensions: any, key: string, column: string, serie: any) {
     dimensions[key].forEach((opt) => {
       if (opt.handle === column) {
-        serie[key] = opt.nameT;
+        serie[key] = opt.nameT ? opt.nameT : opt.nameW;
       }
     });
   }
@@ -204,6 +212,10 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
     if (!validDates) {
       this.invalidDates = '*Invalid date selection';
     }
+  }
+
+  showTable() {
+    this.displayTable = true;
   }
 
   checkValidDates = (dates: DatesSelected) => {

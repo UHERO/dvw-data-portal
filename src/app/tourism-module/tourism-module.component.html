@@ -5,11 +5,12 @@
     </div>
     <div id="content-col">
         <a id="back-link" [routerLink]="['/']"><i class="fas fa-arrow-left"></i> Home</a>
-        <button *ngIf="!displayInstructions" type="button" class="btn btn-secondary clear-table" (click)="clearSelections()">Clear All Selections</button>
-        <div *ngIf="displayInstructions" id="instructions">
+        <button *ngIf="displayTable" type="button" class="btn btn-secondary clear-table" (click)="clearSelections()">Clear All Selections</button>
+        <div *ngIf="!displayTable" id="instructions">
             To generate a table, make at least one selection in each of the selectors to the left and choose a frequency.
+            <p>Built by UHERO Analytics</p>
         </div>
-        <app-module-table *ngIf="!displayInstructions" [tableData]="tableData" [tableColumns]="tableColumns" [dateArray]="dateArray" [dimensions]="selectedDimensions">
+        <app-module-table *ngIf="displayTable" [tableData]="tableData" [tableColumns]="tableColumns" [dateArray]="dateArray" [dimensions]="selectedDimensions">
         </app-module-table>
     </div>
     <div id="selectors">
@@ -34,5 +35,9 @@
             [(selectedMonth)]="datesSelected.selectedEndMonth" (updateMonthSelection)="updateDateAndTable($event, 'selectedEndMonth')">
         </app-month-selector>
         <p class="text-danger invalid-dates" *ngIf="invalidDates">{{invalidDates}}</p>
+        <div id="get-data">
+            <span *ngIf="loading" class="loading fa fa-spinner fa-pulse fa-fw" aria-hidden="true"></span>
+            <button type="button" class="btn btn-secondary" (click)="showTable()" [disabled]="noData ? true : false">Get Data</button>
+          </div>  
     </div>
 </div>

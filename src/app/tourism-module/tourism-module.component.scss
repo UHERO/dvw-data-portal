@@ -28,6 +28,14 @@
         }
     }
 
+    #get-data {
+        display: inline-block;
+        .loading {
+            color: $link-color;
+            font-size: 1.5em;
+        }
+    }
+
     #selectors {
         margin-left: 5px;
 

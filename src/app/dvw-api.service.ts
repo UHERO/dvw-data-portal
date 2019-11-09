@@ -68,13 +68,10 @@ export class DvwApiService {
         flatMap((dimensions) => 
           observableForkJoin(dimensions.map(d => this.http.get(`${API_URL}/${d}/all/${mod}`).pipe(
             map((res: any) => {
-              console.log(res)
               const mappedResponse = mapDimensionOptions(res);
               const selector = { name: d, options: mappedResponse };
-              console.log('selector', selector)
               selectors.push(selector)
               this.cachedDimensionOptions[mod] = selectors;
-              console.log(selectors)
               moduleDimensionOptions$ = null;
               return selector;
             })
