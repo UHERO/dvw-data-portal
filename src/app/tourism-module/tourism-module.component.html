@@ -1,13 +1,13 @@
-<div id="wrapper">
+<div id="wrapper" class="d-flex flex-wrap">
     <div id="sidebar">
         <app-dimension-selector [selectedModule]="selectedModule" (updateDimensionSelection)="updateDimensions($event)">
         </app-dimension-selector>
     </div>
     <div id="content-col">
-        <a id="back-link" [routerLink]="['/']"><i class="fas fa-arrow-left"></i> Home</a>
-        <button *ngIf="displayTable" type="button" class="btn btn-secondary clear-table" (click)="clearSelections()">Clear All Selections</button>
+        <a id="back-link" [routerLink]="['/']" class="btn btn-outline-info m-2 btn-sm"><i class="fas fa-arrow-left"></i> Home</a>
+        <button *ngIf="displayTable" type="button" class="btn btn-outline-secondary btn-sm m-2 clear-table" (click)="clearSelections()">Clear All Selections</button>
         <div *ngIf="!displayTable" id="instructions">
-            To generate a table, make at least one selection in each of the selectors to the left and choose a frequency.
+            To generate a table, make at least one selection in each of the selectors to the left, choose a frequency, and click on the Get Data button.
             <p>Built by UHERO Analytics</p>
         </div>
         <app-module-table *ngIf="displayTable" [tableData]="tableData" [tableColumns]="tableColumns" [dateArray]="dateArray" [dimensions]="selectedDimensions">
@@ -37,7 +37,7 @@
         <p class="text-danger invalid-dates" *ngIf="invalidDates">{{invalidDates}}</p>
         <div id="get-data">
             <span *ngIf="loading" class="loading fa fa-spinner fa-pulse fa-fw" aria-hidden="true"></span>
-            <button type="button" class="btn btn-secondary" (click)="showTable()" [disabled]="noData ? true : false">Get Data</button>
+            <button type="button" class="btn btn-outline-info btn-sm" (click)="showTable()" [disabled]="noData || displayTable ? true : false">Get Data</button>
           </div>  
     </div>
 </div>

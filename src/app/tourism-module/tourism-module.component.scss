@@ -6,7 +6,7 @@
     overflow-y: hidden;
 
     #sidebar {
-        border-right: 1px solid $link-color;
+        // border-right: 1px solid $link-color;
         width: 250px;
         display: inline-block;
     }
@@ -23,7 +23,7 @@
         }
 
         #back-link {
-            float: right;
+            //float: right;
             margin-bottom: -1.75em;
         }
     }
