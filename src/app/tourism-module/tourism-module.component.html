@@ -4,10 +4,13 @@
         </app-dimension-selector>
     </div>
     <div id="content-col">
-        <a id="back-link" [routerLink]="['/']" class="btn btn-outline-info m-2 btn-sm"><i class="fas fa-arrow-left"></i> Home</a>
-        <button *ngIf="displayTable" type="button" class="btn btn-outline-secondary btn-sm m-2 clear-table" (click)="clearSelections()">Clear All Selections</button>
+        <div id="additional-buttons" class="d-flex justify-content-end mt-1 mb-n4">
+            <button *ngIf="displayTable" type="button" class="btn btn-outline-secondary btn-sm clear-table" (click)="clearSelections()">Clear All Selections</button>
+            <a id="back-link" [routerLink]="['/']" class="btn btn-outline-info btn-sm ml-1"><span class="fas fa-arrow-left"></span> Home</a>
+        </div>
         <div *ngIf="!displayTable" id="instructions">
-            To generate a table, make at least one selection in each of the selectors to the left, choose a frequency, and click on the Get Data button.
+            <p>To generate a table, make at least one selection in each of the selectors to the left, choose a frequency, and click on the Get Data button.
+            Once a data table is displayed, the table will automatically update when any additional selections are made, if the data is available.</p>
             <p>Built by UHERO Analytics</p>
         </div>
         <app-module-table *ngIf="displayTable" [tableData]="tableData" [tableColumns]="tableColumns" [dateArray]="dateArray" [dimensions]="selectedDimensions">

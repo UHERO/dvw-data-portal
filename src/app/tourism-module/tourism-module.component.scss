@@ -22,18 +22,21 @@
             width: 80%;
         }
 
-        #back-link {
-            //float: right;
-            margin-bottom: -1.75em;
+        #additional-buttons {
+            .btn {
+                padding: 0 0.25em;
+            }
+            
+            #back-link {
+                &:hover {
+                    color: #FFF;
+                }
+            }
         }
     }
 
     #get-data {
         display: inline-block;
-        .loading {
-            color: $link-color;
-            font-size: 1.5em;
-        }
     }
 
     #selectors {
