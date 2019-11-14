@@ -70,19 +70,22 @@ export class ModuleTableComponent implements OnInit, OnChanges {
       buttons: [
         {
           extend: 'excel',
-          text: '<i class="fas fa-file-excel" aria-hidden="true" title="Excel"></i>',
+          className: 'btn btn-outline-secondary',
+          text: '<span class="fas fa-file-excel" aria-hidden="true" title="Excel"></span>',
           exportOptions: {
             columns: ':visible'
           },
         }, {
           extend: 'csv',
-          text: '<i class="fas fa-file-csv" aria-hidden="true" title="CSV"></i>',
+          className: 'btn btn-outline-secondary',
+          text: '<span class="fas fa-file-csv" aria-hidden="true" title="CSV"></span>',
           exportOptions: {
             columns: ':visible'
           },
         }, {
           extend: 'pdf',
-          text: '<i class="fas fa-file-pdf" aria-hidden="true" title="PDF"></i>',
+          className: 'btn btn-outline-secondary',
+          text: '<span class="fas fa-file-pdf" aria-hidden="true" title="PDF"></span>',
           exportOptions: {
             columns: ':visible'
           },
@@ -170,7 +173,8 @@ export class ModuleTableComponent implements OnInit, OnChanges {
           }
         }, {
           extend: 'print',
-          text: '<i class="fas fa-print" aria-hidden="true" title="Print"></i>',
+          className: 'btn btn-outline-secondary',
+          text: '<span class="fas fa-print" aria-hidden="true" title="Print"></span>',
           exportOptions: {
             columns: ':visible'
           },

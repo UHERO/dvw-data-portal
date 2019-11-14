@@ -1,4 +1,4 @@
-<div id="dimension-selectors" *ngIf="selectors$ | async as selectors; else loading">
+<div id="dimension-selectors" *ngIf="dimensions as selectors; else loading">
   <ng-template ngFor let-selector [ngForOf]="selectors">
   <label>{{selector.name}}</label>
     <ul #dimension [id]="selector.name">
@@ -20,5 +20,5 @@
   </ng-template>
 </div>
 <ng-template #loading>
-  <mat-spinner [diameter]="50"></mat-spinner>
+  <span class="loading fa fa-spinner fa-pulse fa-fw" aria-hidden="true"></span>
 </ng-template>

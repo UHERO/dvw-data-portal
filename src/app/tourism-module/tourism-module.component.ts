@@ -1,9 +1,11 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild  } from '@angular/core';
 import { ActivatedRoute } from "@angular/router";
 import { Subscription } from 'rxjs';
 import { DvwApiService } from '../dvw-api.service';
 import { DatesSelected } from '../dates-selected';
 import { HelperService } from '../helper.service';
+import { DimensionSelectorComponent } from '../dimension-selector/dimension-selector.component';
+import { FrequencySelectorComponent } from '../frequency-selector/frequency-selector.component';
 
 @Component({
   selector: 'app-tourism-module',
@@ -20,7 +22,14 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
   tableColumns: Array<any> = [];
   noData: boolean = true;
   invalidDates: string;
-  displayInstructions: boolean = true;
+  displayTable: boolean = false;
+  loading: boolean = false;
+  @ViewChild(DimensionSelectorComponent, { static: false })
+  public sidebar: DimensionSelectorComponent;
+  @ViewChild(FrequencySelectorComponent, { static: false })
+  public freqSelector: FrequencySelectorComponent;
+
+
 
   constructor(private route: ActivatedRoute, private apiService: DvwApiService, private _helper: HelperService) { }
 
@@ -32,6 +41,27 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.routeSub.unsubscribe();
+  }
+
+  clearSelections() {
+    this.displayTable = false;
+    //this.selectedIndicators = [];
+    this.datesSelected = null;
+    // this.displayInstructions = true;
+    this.selectedFrequency = null;
+    this.noData = true;
+    //this.frequencies = [];
+    //this.regions = [];
+    //this.selectedFreqs = [];
+    //this.selectedGeos = [];
+    //this.dateArray = [];
+    this.tableData = [];
+    //this.indicatorSelected = false;
+    //this.toggleDateSelectors();
+    //this.sidebar.reset();
+    //this.sidebar.ids = [];
+    this.sidebar.resetSelections();
+    this.freqSelector.resetFrequency();
   }
 
   updateDimensions(event: any) {
@@ -52,7 +82,8 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
       }) === true;
     }
     if (allDimensionsSelected && frequency && !this.invalidDates) {
-      this.displayInstructions = false;
+      // this.displayInstructions = false;
+      this.loading = true;
       this.getSeriesData(dimensions, frequency);
     }
   }
@@ -83,6 +114,12 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
         this.tableData = [];
         this.noData = true;
       }
+    },
+    (error) => {
+      console.log('get series data error', error);
+    },
+    () => {
+      this.loading = false;
     });
   }
 
@@ -136,7 +173,7 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
   matchDimensionAndColumn(dimensions: any, key: string, column: string, serie: any) {
     dimensions[key].forEach((opt) => {
       if (opt.handle === column) {
-        serie[key] = opt.nameW;
+        serie[key] = opt.nameT ? opt.nameT : opt.nameW;
       }
     });
   }
@@ -161,33 +198,8 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
     return dimension ? dimension.tableName : key;
   }
 
-  updateStartYear(event: any) {
-    this.datesSelected.selectedStartYear = event;
-    this.updateDatatable(this.datesSelected, this.selectedFrequency, this.tableData);
-  }
-
-  updateEndYear(event: any) {
-    this.datesSelected.selectedEndYear = event;
-    this.updateDatatable(this.datesSelected, this.selectedFrequency, this.tableData);
-  }
-
-  updateStartQuarter(event: any) {
-    this.datesSelected.selectedStartQuarter = event;
-    this.updateDatatable(this.datesSelected, this.selectedFrequency, this.tableData);
-  }
-
-  updateEndQuarter(event: any) {
-    this.datesSelected.selectedEndQuarter = event;
-    this.updateDatatable(this.datesSelected, this.selectedFrequency, this.tableData);
-  }
-
-  updateStartMonth(event: any) {
-    this.datesSelected.selectedStartMonth = event;
-    this.updateDatatable(this.datesSelected, this.selectedFrequency, this.tableData);
-  }
-
-  updateEndMonth(event: any) {
-    this.datesSelected.selectedEndMonth = event;
+  updateDateAndTable(event: any, selectedDate: string) {
+    this.datesSelected[selectedDate] = event;
     this.updateDatatable(this.datesSelected, this.selectedFrequency, this.tableData);
   }
 
@@ -200,6 +212,10 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
     if (!validDates) {
       this.invalidDates = '*Invalid date selection';
     }
+  }
+
+  showTable() {
+    this.displayTable = true;
   }
 
   checkValidDates = (dates: DatesSelected) => {

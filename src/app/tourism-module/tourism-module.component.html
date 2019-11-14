@@ -1,37 +1,46 @@
-<div id="wrapper">
+<div id="wrapper" class="d-flex flex-wrap">
     <div id="sidebar">
         <app-dimension-selector [selectedModule]="selectedModule" (updateDimensionSelection)="updateDimensions($event)">
         </app-dimension-selector>
     </div>
     <div id="content-col">
-        <a id="back-link" [routerLink]="['/']"><i class="fas fa-arrow-left"></i> Back</a>
-        <div *ngIf="displayInstructions" id="instructions">
-            To generate a table, make at least one selection in each of the selectors to the left and choose a frequency.
+        <div id="additional-buttons" class="d-flex justify-content-end mt-1 mb-n4">
+            <button *ngIf="displayTable" type="button" class="btn btn-outline-secondary btn-sm clear-table" (click)="clearSelections()">Clear All Selections</button>
+            <a id="back-link" [routerLink]="['/']" class="btn btn-outline-info btn-sm ml-1"><span class="fas fa-arrow-left"></span> Home</a>
         </div>
-        <app-module-table *ngIf="!displayInstructions" [tableData]="tableData" [tableColumns]="tableColumns" [dateArray]="dateArray" [dimensions]="selectedDimensions">
+        <div *ngIf="!displayTable" id="instructions">
+            <p>To generate a table, make at least one selection in each of the selectors to the left, choose a frequency, and click on the Get Data button.
+            Once a data table is displayed, the table will automatically update when any additional selections are made, if the data is available.</p>
+            <p>Built by UHERO Analytics</p>
+        </div>
+        <app-module-table *ngIf="displayTable" [tableData]="tableData" [tableColumns]="tableColumns" [dateArray]="dateArray" [dimensions]="selectedDimensions">
         </app-module-table>
     </div>
     <div id="selectors">
         <app-frequency-selector (updateFrequencySelection)="updateFrequency($event)"></app-frequency-selector>
         <app-year-selector *ngIf="!noData" [rangeLabel]="'From'" [dates]="datesSelected.fromYearList"
-            [(selectedYear)]="datesSelected.selectedStartYear" (updateYearSelection)="updateStartYear($event)">
+            [(selectedYear)]="datesSelected.selectedStartYear" (updateYearSelection)="updateDateAndTable($event, 'selectedStartYear')">
         </app-year-selector>
         <app-quarter-selector *ngIf="!noData && selectedFrequency === 'Q'" [quarters]="datesSelected.fromQuarterList"
             [(selectedQuarter)]="datesSelected.selectedStartQuarter"
-            (updateQuarterSelection)="updateStartQuarter($event)">
+            (updateQuarterSelection)="updateDateAndTable($event, 'selectedStartQuarter')">
         </app-quarter-selector>
         <app-month-selector *ngIf="!noData && selectedFrequency === 'M'" [months]="datesSelected.fromMonthList"
-            [(selectedMonth)]="datesSelected.selectedStartMonth" (updateMonthSelection)="updateStartMonth($event)">
+            [(selectedMonth)]="datesSelected.selectedStartMonth" (updateMonthSelection)="updateDateAndTable($event, 'selectedStartMonth')">
         </app-month-selector>
         <app-year-selector *ngIf="!noData" [rangeLabel]="'To'" [dates]="datesSelected.toYearList"
-            [(selectedYear)]="datesSelected.selectedEndYear" (updateYearSelection)="updateEndYear($event)">
+            [(selectedYear)]="datesSelected.selectedEndYear" (updateYearSelection)="updateDateAndTable($event, 'selectedEndYear')">
         </app-year-selector>
         <app-quarter-selector *ngIf="!noData && selectedFrequency === 'Q'" [quarters]="datesSelected.toQuarterList"
-            [(selectedQuarter)]="datesSelected.selectedEndQuarter" (updateQuarterSelection)="updateEndQuarter($event)">
+            [(selectedQuarter)]="datesSelected.selectedEndQuarter" (updateQuarterSelection)="updateDateAndTable($event, 'selectedEndQuarter')">
         </app-quarter-selector>
         <app-month-selector *ngIf="!noData && selectedFrequency === 'M'" [months]="datesSelected.toMonthList"
-            [(selectedMonth)]="datesSelected.selectedEndMonth" (updateMonthSelection)="updateEndMonth($event)">
+            [(selectedMonth)]="datesSelected.selectedEndMonth" (updateMonthSelection)="updateDateAndTable($event, 'selectedEndMonth')">
         </app-month-selector>
         <p class="text-danger invalid-dates" *ngIf="invalidDates">{{invalidDates}}</p>
+        <div id="get-data">
+            <span *ngIf="loading" class="loading fa fa-spinner fa-pulse fa-fw" aria-hidden="true"></span>
+            <button type="button" class="btn btn-outline-info btn-sm" (click)="showTable()" [disabled]="noData || displayTable ? true : false">Get Data</button>
+          </div>  
     </div>
 </div>

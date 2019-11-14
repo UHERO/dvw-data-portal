@@ -1,4 +1,5 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-frequency-selector',
@@ -21,6 +22,10 @@ export class FrequencySelectorComponent implements OnInit {
 
   changeFrequency(event) {
     this.updateFrequencySelection.emit(event.value);
+  }
+
+  resetFrequency() {
+    this.selectedValue = null;
   }
 
 }

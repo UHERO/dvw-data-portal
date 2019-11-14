@@ -6,7 +6,7 @@
     overflow-y: hidden;
 
     #sidebar {
-        border-right: 1px solid $link-color;
+        // border-right: 1px solid $link-color;
         width: 250px;
         display: inline-block;
     }
@@ -22,10 +22,21 @@
             width: 80%;
         }
 
-        #back-link {
-            float: right;
-            margin-bottom: -1.75em;
+        #additional-buttons {
+            .btn {
+                padding: 0 0.25em;
+            }
+            
+            #back-link {
+                &:hover {
+                    color: #FFF;
+                }
+            }
         }
+    }
+
+    #get-data {
+        display: inline-block;
     }
 
     #selectors {
