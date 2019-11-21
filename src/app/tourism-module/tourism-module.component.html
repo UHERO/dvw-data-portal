@@ -39,6 +39,7 @@
         </app-month-selector>
         <p class="text-danger invalid-dates" *ngIf="invalidDates">{{invalidDates}}</p>
         <div id="get-data">
+            <span *ngIf="noSeriesAvailable" aria-hidden="true">No Series Available</span>
             <span *ngIf="loading" class="loading fa fa-spinner fa-pulse fa-fw" aria-hidden="true"></span>
             <button type="button" class="btn btn-outline-info btn-sm" (click)="showTable()" [disabled]="noData || displayTable ? true : false">Get Data</button>
           </div>  

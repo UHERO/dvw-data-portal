@@ -21,6 +21,7 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
   tableData: Array<any>;
   tableColumns: Array<any> = [];
   noData: boolean = true;
+  noSeriesAvailable = false;
   invalidDates: string;
   displayTable: boolean = false;
   loading: boolean = false;
@@ -45,21 +46,11 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
 
   clearSelections() {
     this.displayTable = false;
-    //this.selectedIndicators = [];
     this.datesSelected = null;
-    // this.displayInstructions = true;
     this.selectedFrequency = null;
     this.noData = true;
-    //this.frequencies = [];
-    //this.regions = [];
-    //this.selectedFreqs = [];
-    //this.selectedGeos = [];
-    //this.dateArray = [];
+    this.noSeriesAvailable = false;
     this.tableData = [];
-    //this.indicatorSelected = false;
-    //this.toggleDateSelectors();
-    //this.sidebar.reset();
-    //this.sidebar.ids = [];
     this.sidebar.resetSelections();
     this.freqSelector.resetFrequency();
   }
@@ -92,6 +83,7 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
     const apiParam = this.formatApiParam(dimensions);
     this.apiService.getSeries(this.selectedModule, apiParam, frequency).subscribe((series) => {
       if (series) {
+        this.noSeriesAvailable = false;
         this.datesSelected = this.datesSelected ? this.datesSelected : <DatesSelected>{};
         this.datesSelected.startDate = series.observationStart;
         this.datesSelected.endDate = series.observationEnd;
@@ -110,6 +102,7 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
         this.noData = false;
       }
       if (!series) {
+        this.noSeriesAvailable = false;
         this.tableColumns = this.createColumns([], dimensions);
         this.tableData = [];
         this.noData = true;
@@ -117,6 +110,7 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
     },
     (error) => {
       console.log('get series data error', error);
+      this.noSeriesAvailable = true;
     },
     () => {
       this.loading = false;
