@@ -102,7 +102,7 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
         this.noData = false;
       }
       if (!series) {
-        this.noSeriesAvailable = false;
+        this.noSeriesAvailable = true;
         this.tableColumns = this.createColumns([], dimensions);
         this.tableData = [];
         this.noData = true;

@@ -20,10 +20,8 @@ export class DimensionSelectorComponent implements OnInit, AfterViewInit, OnDest
   constructor(private apiService: DvwApiService) { }
 
   ngOnInit() {
-    // this.selectors$ = this.apiService.getDimensionsWithOptions(this.selectedModule);
     this.selectors$ = this.apiService.getDimensionsWithOptions(this.selectedModule).subscribe((dimensions) => {
       this.dimensions = dimensions;
-      console.log('dimensions', this.dimensions)
     });
   }
 
