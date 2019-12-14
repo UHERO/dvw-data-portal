@@ -11,7 +11,6 @@
         <div *ngIf="!displayTable" id="instructions">
             <p>To generate a table, make at least one selection in each of the selectors to the left, choose a frequency, and click on the Get Data button.
             Once a data table is displayed, the table will automatically update when any additional selections are made, if the data is available.</p>
-            <p>Built by UHERO Analytics</p>
         </div>
         <app-module-table *ngIf="displayTable" [tableData]="tableData" [tableColumns]="tableColumns" [dateArray]="dateArray" [dimensions]="selectedDimensions">
         </app-module-table>
@@ -44,4 +43,6 @@
             <button type="button" class="btn btn-outline-info btn-sm" (click)="showTable()" [disabled]="noData || displayTable ? true : false">Get Data</button>
           </div>  
     </div>
+    <div class="flex-break"></div>
+    <p class="ml-1">Built by UHERO Analytics</p>
 </div>
