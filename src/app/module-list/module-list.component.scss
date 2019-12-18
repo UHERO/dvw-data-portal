@@ -1,0 +1,11 @@
+@import "abstracts/variables";
+
+.module-list{
+  .card {
+    border: 0;
+
+    &:hover {
+      background-color: $light-gray;
+    }
+  }
+}
