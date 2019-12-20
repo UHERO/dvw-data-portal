@@ -38,14 +38,15 @@ export class ModuleTableComponent implements OnInit, OnChanges {
       this.tableWidget.clear().destroy();
       moduleTable.empty();
     }
-    const fixedColumns = Object.keys(this.dimensions);
+    const fixedColumns = [...Object.keys(this.dimensions), 'units'];
+    const fixedColumnsLength = fixedColumns.length // include units column to module dimensions
     this.tableWidget = moduleTable.DataTable({
       data: tableData.series,
       dom: 'Bt',
       columns: tableColumns,
       columnDefs: [
         {
-          'className': 'td-left', 'targets': Array.apply(null, { length: fixedColumns.length }).map(Number.call, Number)
+          'className': 'td-left', 'targets': Array.apply(null, { length: fixedColumnsLength }).map(Number.call, Number)
         },
         {
           'className': 'td-right', 'targets': '_all',
@@ -57,7 +58,7 @@ export class ModuleTableComponent implements OnInit, OnChanges {
       ],
       fixedColumns: {
         // Fixed columns prevents emptyTable language from being displayed
-        leftColumns: !tableData.series ? '' : fixedColumns.length
+        leftColumns: !tableData.series ? '' : fixedColumnsLength
       },
       scrollY: '400px',
       scrollX: true,
@@ -129,15 +130,14 @@ export class ModuleTableComponent implements OnInit, OnChanges {
             const formattedTable: Array<any> = [];
             currentTable.forEach((row, index) => {
               let counter = currentTable.length;
-              // Fixed Columns: Indicator, Area, Units
               const fixed = [];
               fixedColumns.forEach((col, index) => {
-                fixed.push(row[index]);
+                fixed.unshift(row[index]);
               });
               // Get data from each original row excluding fixed columns and sources
-              const nonFixedCols = row.slice(fixedColumns.length, row.length);
+              const nonFixedCols = row.slice(fixedColumnsLength, row.length);
               // Split data into groups of arrays with max length == 7
-              const maxLength = fixedColumns.length === 3 ? 5 : 4;
+              const maxLength = fixedColumnsLength === 4 ? 4 : 3;
               const split = splitTable(nonFixedCols, maxLength);
               for (let i = 0; i < split.length; i++) {
                 // Each group is used as a new row for the formatted tables
@@ -195,21 +195,21 @@ export class ModuleTableComponent implements OnInit, OnChanges {
               return result;
             }
             // Get array of dates from table
-            const dates = tableColumns.slice(fixedColumns.length, tableColumns.length);
+            const dates = tableColumns.slice(fixedColumnsLength, tableColumns.length);
             const dateArray = [];
             dates.forEach((date) => {
               dateArray.push(date.title);
             });
             // Get array of columns minus fixed columns
-            const columns = tableColumns.slice(fixedColumns.length);
-            // Split columns into arrays with max length of 7
-            const maxLength = fixedColumns.length === 3 ? 7 : 8;
+            const columns = tableColumns.slice(fixedColumnsLength);
+            // Split columns into arrays with max length of 7 (total of 10 cells per row)
+            const maxLength = fixedColumnsLength === 4 ? 6 : 7;
             const tableHeaders = splitTable(columns, maxLength);
             const newTables = [];
 
             // Add fixed columns to the new table headers and create a new table for each header
             tableHeaders.forEach((header) => {
-              for (let i = 0; i < fixedColumns.length; i++) {
+              for (let i = fixedColumnsLength - 1; i >= 0; i--) {
                 header.unshift(tableColumns[i]);
               }
               let html = '<table class="dataTable no-footer"><tr>';
@@ -232,7 +232,7 @@ export class ModuleTableComponent implements OnInit, OnChanges {
                 fixedColumns.forEach((dim) => {
                   table += `<td>${ind[dim]}</td>`;
                 });
-                let colCount = fixedColumns.length;
+                let colCount = fixedColumnsLength;
                 while (colCount < 10 && obsCounter < sortedObs.length) {
                   table += '<td>' + ind.observations[sortedObs[obsCounter]] + '</td>';
                   colCount += 1;
