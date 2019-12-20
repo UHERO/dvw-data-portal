@@ -1,8 +1,17 @@
-<mat-form-field class="mr-3">
+<!-- <mat-form-field class="mr-3">
   <mat-label>Frequency</mat-label>
   <mat-select [(ngModel)]="selectedValue" name="frequency" (selectionChange)="changeFrequency($event)">
     <mat-option *ngFor="let frequency of frequencies" [value]="frequency.value">
       {{frequency.label}}
     </mat-option>
   </mat-select>
-</mat-form-field>
+</mat-form-field> -->
+
+  <form id="frequency-form" class="mr-1">
+    <label>Frequency</label>
+    <select size="3" (change)="changeFrequency($event.target.value)">
+      <ng-container *ngFor="let frequency of frequencies"> 
+        <option [value]="frequency.value">{{frequency.label}}</option>
+      </ng-container>
+    </select>
+  </form>

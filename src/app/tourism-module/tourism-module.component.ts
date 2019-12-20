@@ -99,7 +99,6 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
         const formattedSeries = this.formatSeriesData(series, dateArray, dimensions);
         this.tableColumns = this.createColumns(dateArray, dimensions);
         this.tableData = formattedSeries;
-        console.log('tableData', this.tableData)
         this.noData = false;
       }
       if (!series) {

@@ -1,0 +1,26 @@
+@import 'abstracts/variables';
+
+#frequency-form {
+  display: inline-block;
+  width: 220px;
+
+  label {
+    font-size: 0.9em;
+    font-weight: bold;
+  };
+
+  select {
+    border: 1px solid #E5E5E5;
+    font-size: 0.8em;
+    width: 100%;
+    background-color: $link-color;
+
+    option {
+      padding-left: 10px;
+
+      &:not(:checked) {
+        background-color: #FFF;
+      }
+    }
+  }
+}

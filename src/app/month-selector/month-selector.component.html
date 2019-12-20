@@ -1,8 +1,6 @@
-<mat-form-field class="date-selector mr-3">
-  <mat-label>Month</mat-label>
-  <mat-select [(ngModel)]="selectedMonth" name="month" (selectionChange)="changeMonth($event)">
-    <mat-option *ngFor="let m of months" [value]="m">
-      {{m}}
-    </mat-option>
-  </mat-select>
-</mat-form-field>
+<form class="date-selector form-group mr-1">
+  <label>Month</label>
+  <select class="form-control form-control-sm" [(ngModel)]="selectedMonth" name="month" (change)="changeMonth($event.target.value)">
+    <option *ngFor="let m of months" [value]="m">{{m}}</option>
+  </select>
+</form>
