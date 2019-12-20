@@ -99,6 +99,7 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
         const formattedSeries = this.formatSeriesData(series, dateArray, dimensions);
         this.tableColumns = this.createColumns(dateArray, dimensions);
         this.tableData = formattedSeries;
+        console.log('tableData', this.tableData)
         this.noData = false;
       }
       if (!series) {
@@ -144,7 +145,7 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
         results[date.tableDate] = ' ';
         const dateExists = serie.dates.indexOf(date.date);
         if (dateExists > -1) {
-          results[date.tableDate] = serie.values[dateExists] === Infinity ? ' ' : serie.values[dateExists].toLocaleString('en-US');
+          results[date.tableDate] = serie.values[dateExists] === Infinity ? ' ' : serie.values[dateExists].toLocaleString('en-US', {minimumFractionDigits: serie.decimal, maximumFractionDigits: serie.decimal});
         }
       });
       serie['observations'] = results;
@@ -168,6 +169,10 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
     dimensions[key].forEach((opt) => {
       if (opt.handle === column) {
         serie[key] = opt.nameT ? opt.nameT : opt.nameW;
+        if (opt.unit) {
+          serie.units = opt.unit;
+          serie.decimal = opt.decimal;
+        }
       }
     });
   }
@@ -175,6 +180,7 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
   createColumns = (dates: Array<any>, dimensions: any) => {
     const tableColumns = [];
     Object.keys(dimensions).forEach(key => tableColumns.push({ title: this.getDimensionColName(key), data: key }));
+    tableColumns.push({ title: 'Units', data: 'units' });
     tableColumns.forEach((col, index) => {
       if (col.data === 'indicators') {
         tableColumns.splice(index, 1);

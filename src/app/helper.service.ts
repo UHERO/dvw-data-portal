@@ -16,7 +16,7 @@ export class HelperService {
   ];
 
   dimensionsOrder = [
-    { module: 'ade', order: ['indicators', 'markets', 'destinations'] },
+    { module: 'trend', order: ['indicators', 'markets', 'destinations'] },
     { module: 'airseat', order: ['indicators', 'markets', 'destinations'] },
     { module: 'hotel', order: ['indicators', 'categories'] },
     { module: 'char', order: ['groups', 'indicators'] },
