@@ -15,7 +15,7 @@
         <app-module-table *ngIf="displayTable" [tableData]="tableData" [tableColumns]="tableColumns" [dateArray]="dateArray" [dimensions]="selectedDimensions">
         </app-module-table>
     </div>
-    <div id="selectors">
+    <div id="selectors" class="d-flex flex-row align-items-end">
         <app-frequency-selector (updateFrequencySelection)="updateFrequency($event)"></app-frequency-selector>
         <app-year-selector *ngIf="!noData" [rangeLabel]="'From'" [dates]="datesSelected.fromYearList"
             [(selectedYear)]="datesSelected.selectedStartYear" (updateYearSelection)="updateDateAndTable($event, 'selectedStartYear')">
@@ -43,6 +43,4 @@
             <button type="button" class="btn btn-outline-info btn-sm" (click)="showTable()" [disabled]="noData || displayTable ? true : false">Get Data</button>
           </div>  
     </div>
-    <div class="flex-break"></div>
-    <p class="ml-1">Built by UHERO Analytics</p>
 </div>

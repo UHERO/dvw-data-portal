@@ -40,7 +40,22 @@
 }
 
 .date-selector {
-    .mat-form-field-infix {
-        width: 100px;
+    display: inline-block;
+
+    label {
+        display: block;
+        font-size: 0.9em;
+        text-align: center;
+    }
+    
+    select {
+        background: #FFF;
+        border: 1px solid $light-gray;
+        border-radius: 0;
+        font-size: 0.8em;
+        height: 2rem;
+        line-height: 1.5;
+        min-width: 75px;
+        padding: 0rem 1.75rem 0rem .75rem;
     }
 }

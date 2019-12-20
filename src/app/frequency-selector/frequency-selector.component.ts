@@ -21,7 +21,7 @@ export class FrequencySelectorComponent implements OnInit {
   }
 
   changeFrequency(event) {
-    this.updateFrequencySelection.emit(event.value);
+    this.updateFrequencySelection.emit(event);
   }
 
   resetFrequency() {

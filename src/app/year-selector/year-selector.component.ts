@@ -18,7 +18,7 @@ export class YearSelectorComponent implements OnInit {
   }
 
   changeYear(event) {
-    this.selectedYear = this.dates.find(year => year === event.value);
-    this.updateYearSelection.emit(event.value)
+    this.selectedYear = this.dates.find(year => year === event);
+    this.updateYearSelection.emit(event)
   }
 }

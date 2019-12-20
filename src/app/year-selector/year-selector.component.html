@@ -1,8 +1,6 @@
-<mat-form-field class="date-selector mr-3">
-  <mat-label>{{rangeLabel}}</mat-label>
-  <mat-select [(ngModel)]="selectedYear" [name]="rangeLabel" (selectionChange)="changeYear($event)">
-    <mat-option *ngFor="let year of dates" [value]="year">
-      {{year}}
-    </mat-option>
-  </mat-select>
-</mat-form-field>
+<form class="date-selector form-group mr-1">
+  <label>{{rangeLabel}}</label>
+  <select class="form-control form-control-sm" [(ngModel)]="selectedYear" [name]="rangeLabel" (change)="changeYear($event.target.value)">
+    <option *ngFor="let year of dates" [value]="year">{{year}}</option>
+  </select>
+</form>

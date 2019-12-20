@@ -16,7 +16,7 @@ export class MonthSelectorComponent implements OnInit {
   }
 
   changeMonth(event) {
-    this.selectedMonth = this.months.find(m => m === event.value);
-    this.updateMonthSelection.emit(event.value);
+    this.selectedMonth = this.months.find(m => m === event);
+    this.updateMonthSelection.emit(event);
   }
 }

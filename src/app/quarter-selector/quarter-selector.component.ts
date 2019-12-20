@@ -16,7 +16,7 @@ export class QuarterSelectorComponent implements OnInit {
   }
 
   changeQuarter(event) {
-    this.selectedQuarter = this.quarters.find(q => q === event.value);
-    this.updateQuarterSelection.emit(event.value);
+    this.selectedQuarter = this.quarters.find(q => q === event);
+    this.updateQuarterSelection.emit(event);
   }
 }
