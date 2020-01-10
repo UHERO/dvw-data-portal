@@ -23,10 +23,11 @@
         font-size: 0.8em;
         padding: 0;
         text-indent: 10px;
-        //padding: 5px;
-        //-moz-appearance: none;
-        //-webkit-appearance: none;
-        // appearance: none;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
     
         li.group-expanded {
             padding-left: 15px;

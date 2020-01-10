@@ -16,6 +16,8 @@ export class DimensionSelectorComponent implements OnInit, AfterViewInit, OnDest
   optgroupCollapse = String.fromCharCode(0xf146);
   selectedOptions = {};
   dimensions;
+  lastSelected = null;
+  lastOptSelected = null;
 
   constructor(private apiService: DvwApiService) { }
 
@@ -41,10 +43,39 @@ export class DimensionSelectorComponent implements OnInit, AfterViewInit, OnDest
     this.updateDimensionSelection.emit({});
   }
 
-  optSelectMouseDown = (event: any, opt: any, name: string) => {
+  optSelectMouseDown = (opt: any, options, name: string) => {
+    if (this.lastSelected) {
+      const start = options.indexOf(opt);
+      const end = options.indexOf(this.lastSelected);
+      const toBeSelected = options.slice(Math.min(start, end), Math.max(start, end) + 1);
+      toBeSelected.forEach((option) => {
+        this.checkSelectedOptions(name, option);
+      });
+      this.lastSelected = opt;
+    }
+    this.updateDimensionSelection.emit(this.selectedOptions);
+    return false;
+  }
+
+  optSelectMouseEvent = (opt: any, name: string, options: Array<any>, startSelect: boolean) => {
+    if (startSelect) {
+      this.lastOptSelected = opt;
+    }
+    if (!startSelect && opt !== this.lastOptSelected) {
+      this.lastSelected = this.lastOptSelected;
+      this.optSelectMouseDown(opt, options, name);
+    }
+    if (!startSelect && opt === this.lastOptSelected) {
+      opt.selected = !opt.selected;
+      this.checkSelectedOptions(name, opt);
+      this.updateDimensionSelection.emit(this.selectedOptions);
+    }
+  }
+
+  checkSelectedOptions(name: string, opt: any) {
     if (!this.selectedOptions[name]) {
       this.selectedOptions[name] = [];
-    }
+    }  
     const index = this.selectedOptions[name].findIndex(o => o.handle === opt.handle);
     if (index > -1) {
       this.selectedOptions[name].splice(index, 1);
@@ -53,8 +84,6 @@ export class DimensionSelectorComponent implements OnInit, AfterViewInit, OnDest
       this.selectedOptions[name].push(opt);
       opt.selected = true;
     }
-    this.updateDimensionSelection.emit(this.selectedOptions);
-    return false;
   }
 
   toggle(event: any, group: any) {
