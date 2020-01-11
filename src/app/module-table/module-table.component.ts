@@ -39,18 +39,20 @@ export class ModuleTableComponent implements OnInit, OnChanges {
       moduleTable.empty();
     }
     const fixedColumns = [...Object.keys(this.dimensions), 'units'];
-    const fixedColumnsLength = fixedColumns.length // include units column to module dimensions
+    const fixedColumnsLength = fixedColumns.length; // include units column to module dimensions
     this.tableWidget = moduleTable.DataTable({
       data: tableData.series,
       dom: 'Bt',
       columns: tableColumns,
       columnDefs: [
         {
-          'className': 'td-left', 'targets': Array.apply(null, { length: fixedColumnsLength }).map(Number.call, Number)
+          className: 'td-left',
+          targets: Array.apply(null, { length: fixedColumnsLength }).map(Number.call, Number)
         },
         {
-          'className': 'td-right', 'targets': '_all',
-          'render': function (data, type, row, meta) {
+          className: 'td-right',
+          targets: '_all',
+          render(data, type, row, meta) {
             // If no data is available for a given year, return an empty string
             return data === undefined ? ' ' : data;
           }
@@ -66,7 +68,7 @@ export class ModuleTableComponent implements OnInit, OnChanges {
       searching: false,
       info: false,
       language: {
-        emptyTable: "No data available for current selection"
+        emptyTable: 'No data available for current selection'
       },
       buttons: [
         {
@@ -90,7 +92,7 @@ export class ModuleTableComponent implements OnInit, OnChanges {
           exportOptions: {
             columns: ':visible'
           },
-          customize: function (doc) {
+          customize(doc) {
             // Table rows should be divisible by 10
             // Maintain consistant table width (i.e. add empty strings if row has less than 10 data cells)
             function rowRightPad(row) {
@@ -131,22 +133,19 @@ export class ModuleTableComponent implements OnInit, OnChanges {
             currentTable.forEach((row, index) => {
               let counter = currentTable.length;
               const fixed = [];
-              fixedColumns.forEach((col, index) => {
-                fixed.unshift(row[index]);
+              fixedColumns.forEach((col, colIndex) => {
+                fixed.unshift(row[colIndex]);
               });
               // Get data from each original row excluding fixed columns and sources
               const nonFixedCols = row.slice(fixedColumnsLength, row.length);
               // Split data into groups of arrays with max length == 7
               const maxLength = fixedColumnsLength === 4 ? 4 : 3;
               const split = splitTable(nonFixedCols, maxLength);
-              for (let i = 0; i < split.length; i++) {
-                // Each group is used as a new row for the formatted tables
-                let newRow = split[i];
-                // Add the fixed columns to each new row
+              for (let newRow of split) {
                 fixed.forEach((c) => {
-                  let cCopy = Object.assign({}, c);
+                  const cCopy = Object.assign({}, c);
                   newRow.unshift(cCopy);
-                })
+                });
                 if (newRow.length < 10) {
                   newRow = rowRightPad(newRow);
                 }
@@ -178,7 +177,7 @@ export class ModuleTableComponent implements OnInit, OnChanges {
           exportOptions: {
             columns: ':visible'
           },
-          customize: function (win) {
+          customize(win) {
             function sortObsDates(nonSorted, sorted) {
               const result = [];
               for (let i = 0; i < sorted.length; i++) {

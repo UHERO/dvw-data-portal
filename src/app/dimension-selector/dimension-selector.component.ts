@@ -1,4 +1,15 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, Input, Output, EventEmitter, ViewChildren, ElementRef, QueryList } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  AfterViewInit,
+  OnDestroy,
+  Input,
+  Output,
+  EventEmitter,
+  ViewChildren,
+  ElementRef,
+  QueryList
+} from '@angular/core';
 import { DvwApiService } from '../dvw-api.service';
 
 @Component({
@@ -16,6 +27,8 @@ export class DimensionSelectorComponent implements OnInit, AfterViewInit, OnDest
   optgroupCollapse = String.fromCharCode(0xf146);
   selectedOptions = {};
   dimensions;
+  lastSelected = null;
+  lastOptSelected = null;
 
   constructor(private apiService: DvwApiService) { }
 
@@ -41,7 +54,36 @@ export class DimensionSelectorComponent implements OnInit, AfterViewInit, OnDest
     this.updateDimensionSelection.emit({});
   }
 
-  optSelectMouseDown = (event: any, opt: any, name: string) => {
+  optSelectMouseDown = (opt: any, options, name: string) => {
+    if (this.lastSelected) {
+      const start = options.indexOf(opt);
+      const end = options.indexOf(this.lastSelected);
+      const toBeSelected = options.slice(Math.min(start, end), Math.max(start, end) + 1);
+      toBeSelected.forEach((option) => {
+        this.checkSelectedOptions(name, option);
+      });
+      this.lastSelected = opt;
+    }
+    this.updateDimensionSelection.emit(this.selectedOptions);
+    return false;
+  }
+
+  optSelectMouseEvent = (opt: any, name: string, options: Array<any>, startSelect: boolean) => {
+    if (startSelect) {
+      this.lastOptSelected = opt;
+    }
+    if (!startSelect && opt !== this.lastOptSelected) {
+      this.lastSelected = this.lastOptSelected;
+      this.optSelectMouseDown(opt, options, name);
+    }
+    if (!startSelect && opt === this.lastOptSelected) {
+      opt.selected = !opt.selected;
+      this.checkSelectedOptions(name, opt);
+      this.updateDimensionSelection.emit(this.selectedOptions);
+    }
+  }
+
+  checkSelectedOptions(name: string, opt: any) {
     if (!this.selectedOptions[name]) {
       this.selectedOptions[name] = [];
     }
@@ -53,23 +95,21 @@ export class DimensionSelectorComponent implements OnInit, AfterViewInit, OnDest
       this.selectedOptions[name].push(opt);
       opt.selected = true;
     }
-    this.updateDimensionSelection.emit(this.selectedOptions);
-    return false;
   }
 
   toggle(event: any, group: any) {
     event.stopPropagation();
-    group.active = !group.active
+    group.active = !group.active;
   }
 
   resetSelections() {
-    Object.keys(this.selectedOptions).forEach((key) =>{
+    Object.keys(this.selectedOptions).forEach((key) => {
       this.selectedOptions[key] = [];
     });
-    this.dimensions.forEach((dim)=> {
+    this.dimensions.forEach((dim) => {
       dim.options.forEach((opt) => {
         opt.selected = false;
       });
-    })
+    });
   }
 }

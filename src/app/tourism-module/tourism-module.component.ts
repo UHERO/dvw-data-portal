@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild  } from '@angular/core';
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { DvwApiService } from '../dvw-api.service';
 import { DatesSelected } from '../dates-selected';
@@ -20,11 +20,11 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
   datesSelected: DatesSelected;
   tableData: Array<any>;
   tableColumns: Array<any> = [];
-  noData: boolean = true;
+  noData = true;
   noSeriesAvailable = false;
   invalidDates: string;
-  displayTable: boolean = false;
-  loading: boolean = false;
+  displayTable = false;
+  loading = false;
   @ViewChild(DimensionSelectorComponent, { static: false })
   public sidebar: DimensionSelectorComponent;
   @ViewChild(FrequencySelectorComponent, { static: false })
@@ -69,7 +69,7 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
     let allDimensionsSelected = false;
     if (dimensions && Object.keys(dimensions).length) {
       allDimensionsSelected = Object.keys(dimensions).every((key) => {
-        return dimensions[key].length > 0
+        return dimensions[key].length > 0;
       }) === true;
     }
     if (allDimensionsSelected && frequency && !this.invalidDates) {
@@ -84,7 +84,7 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
     this.apiService.getSeries(this.selectedModule, apiParam, frequency).subscribe((series) => {
       if (series) {
         this.noSeriesAvailable = false;
-        this.datesSelected = this.datesSelected ? this.datesSelected : <DatesSelected>{};
+        this.datesSelected = this.datesSelected ? this.datesSelected : {} as DatesSelected;
         this.datesSelected.startDate = series.observationStart;
         this.datesSelected.endDate = series.observationEnd;
         this._helper.yearsRange(this.datesSelected);
@@ -122,9 +122,9 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
     const dimensionKeys = Object.keys(dimensions);
     dimensionKeys.forEach((key, index) => {
       apiParam += `${key.substring(0, 1)}=`;
-      dimensions[key].forEach((opt, index) => {
+      dimensions[key].forEach((opt, optIndex) => {
         apiParam += `${opt.handle}`;
-        if (index !== dimensions[key].length - 1) {
+        if (optIndex !== dimensions[key].length - 1) {
           apiParam += `,`;
         }
       });
@@ -138,16 +138,18 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
   formatSeriesData = (series: any, dates: Array<any>, dimensions: any) => {
     series.series.forEach((serie) => {
       this.identifySeriesColumns(serie, dimensions);
-      serie['dimensions'] = dimensions;
-      let results = {}
+      serie.dimensions = dimensions;
+      const results = {};
       dates.forEach((date) => {
         results[date.tableDate] = ' ';
         const dateExists = serie.dates.indexOf(date.date);
         if (dateExists > -1) {
-          results[date.tableDate] = serie.values[dateExists] === Infinity ? ' ' : serie.values[dateExists].toLocaleString('en-US', {minimumFractionDigits: serie.decimal, maximumFractionDigits: serie.decimal});
+          results[date.tableDate] = serie.values[dateExists] === Infinity ?
+            ' ' :
+            serie.values[dateExists].toLocaleString('en-US', {minimumFractionDigits: serie.decimal, maximumFractionDigits: serie.decimal});
         }
       });
-      serie['observations'] = results;
+      serie.observations = results;
     });
     return series;
   }
