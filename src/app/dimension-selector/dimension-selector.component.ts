@@ -1,4 +1,15 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, Input, Output, EventEmitter, ViewChildren, ElementRef, QueryList } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  AfterViewInit,
+  OnDestroy,
+  Input,
+  Output,
+  EventEmitter,
+  ViewChildren,
+  ElementRef,
+  QueryList
+} from '@angular/core';
 import { DvwApiService } from '../dvw-api.service';
 
 @Component({
@@ -75,7 +86,7 @@ export class DimensionSelectorComponent implements OnInit, AfterViewInit, OnDest
   checkSelectedOptions(name: string, opt: any) {
     if (!this.selectedOptions[name]) {
       this.selectedOptions[name] = [];
-    }  
+    }
     const index = this.selectedOptions[name].findIndex(o => o.handle === opt.handle);
     if (index > -1) {
       this.selectedOptions[name].splice(index, 1);
@@ -88,17 +99,17 @@ export class DimensionSelectorComponent implements OnInit, AfterViewInit, OnDest
 
   toggle(event: any, group: any) {
     event.stopPropagation();
-    group.active = !group.active
+    group.active = !group.active;
   }
 
   resetSelections() {
-    Object.keys(this.selectedOptions).forEach((key) =>{
+    Object.keys(this.selectedOptions).forEach((key) => {
       this.selectedOptions[key] = [];
     });
-    this.dimensions.forEach((dim)=> {
+    this.dimensions.forEach((dim) => {
       dim.options.forEach((opt) => {
         opt.selected = false;
       });
-    })
+    });
   }
 }

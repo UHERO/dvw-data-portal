@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-//import { of as observableOf, Observable, from } from 'rxjs';
 import { forkJoin as observableForkJoin, of as observableOf, Observable } from 'rxjs';
 import { tap, map, mergeMap, switchMap, flatMap } from 'rxjs/operators';
 import { HelperService } from './helper.service';
@@ -17,12 +16,14 @@ export class DvwApiService {
 
   constructor(private http: HttpClient, private _helper: HelperService) { }
 
+  mapData = response => response.data;
+
   getDimensions(mod: string): any {
     if (this.cachedDimensions[mod]) {
       return observableOf(this.cachedDimensions[mod]);
     } else {
       let moduleDimensions$ = this.http.get(`${API_URL}/dimensions/${mod}`).pipe(
-        map(mapData),
+        map(this.mapData),
         tap(val => {
           this.cachedDimensions[mod] = val;
           moduleDimensions$ = null;
@@ -37,7 +38,7 @@ export class DvwApiService {
       return observableOf(this.cachedDimensionOptions[dimension + mod]);
     } else {
       let moduleDimensionOptions$ = this.http.get(`${API_URL}/${dimension}/all/${mod}`).pipe(
-        map(mapData),
+        map(this.mapData),
         tap(val => {
           this.cachedDimensionOptions[mod] = val;
           moduleDimensionOptions$ = null;
@@ -65,12 +66,12 @@ export class DvwApiService {
       const selectors = [];
       let moduleDimensionOptions$ = this.http.get(`${API_URL}/dimensions/${mod}`).pipe(
         map(response => this.mapDimensionOrder(response, mod)),
-        flatMap((dimensions) => 
+        flatMap((dimensions) =>
           observableForkJoin(dimensions.map(d => this.http.get(`${API_URL}/${d}/all/${mod}`).pipe(
             map((res: any) => {
               const mappedResponse = mapDimensionOptions(res);
               const selector = { name: d, options: mappedResponse };
-              selectors.push(selector)
+              selectors.push(selector);
               this.cachedDimensionOptions[mod] = selectors;
               moduleDimensionOptions$ = null;
               return selector;
@@ -87,7 +88,7 @@ export class DvwApiService {
       return observableOf(this.cachedSeries[`${mod}:${dimensionList}:${freq}`]);
     } else {
       let series$ = this.http.get(`${API_URL}/series/${mod}?${dimensionList}&f=${freq}`).pipe(
-        map(mapData),
+        map(this.mapData),
         tap(val => {
           this.cachedSeries[`${mod}:${dimensionList}:${freq}`] = val;
           series$ = null;
@@ -107,11 +108,9 @@ export class DvwApiService {
   }
 }
 
-const mapData = response => response.data;
-
 function mapDimensionOptions(response): any {
   const options = response.data;
-  const dataMap = options.reduce((map, value) => (map[value.handle] = value, map), {});
+  const dataMap = options.reduce((m, value) => (m[value.handle] = value, m), {});
   const optionTree = [];
   options.forEach((value) => {
     const parent = dataMap[value.parent];

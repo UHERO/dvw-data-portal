@@ -13,7 +13,7 @@ export class FrequencySelectorComponent implements OnInit {
     { value: 'A', label: 'Annual'},
     { value: 'Q', label: 'Quarterly'},
     { value: 'M', label: 'Monthly'},
-  ]
+  ];
 
   constructor() { }
 
@@ -27,5 +27,4 @@ export class FrequencySelectorComponent implements OnInit {
   resetFrequency() {
     this.selectedValue = null;
   }
-
 }

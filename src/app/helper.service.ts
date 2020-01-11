@@ -64,19 +64,20 @@ export class HelperService {
     return dateArray;
   }
 
-  addQuarterObs(startMonth, monthSelected) {
-    let monthCheck, qMonth;
+  addQuarterObs(startMonth: number, monthSelected: boolean) {
+    let monthCheck;
+    let qMonth;
     // If M not selected, add Q at months 1, 4, 7, 10 (i.e. startMonth === 1, 4, 7, 10)
     if (!monthSelected) {
       qMonth = startMonth;
       monthCheck = this.checkStartMonth(startMonth + 2);
-      if (monthCheck) { return qMonth; };
+      if (monthCheck) { return qMonth; }
     }
     // If M is selected, add Q after months 3, 7, 9, 12 (i.e. startMonth === 3, 7, 9, 12)
     if (monthSelected) {
       qMonth = startMonth - 2;
       monthCheck = this.checkStartMonth(startMonth);
-      if (monthCheck) { return qMonth; };
+      if (monthCheck) { return qMonth; }
     }
   }
 
@@ -109,7 +110,7 @@ export class HelperService {
       startMonth = 1;
       endMonth = 1;
     }
-    return { startYear: startYear, endYear: endYear, startMonth: startMonth, endMonth: endMonth };
+    return { startYear, endYear, startMonth, endMonth };
   }
 
   // If returns true, add quarter to date array
