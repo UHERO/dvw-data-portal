@@ -13,6 +13,7 @@ export class HelperService {
     { key: 'destinations', tableName: 'Destination' },
     { key: 'categories', tableName: 'Category' },
     { key: 'characteristics', tableName: 'Characteristic' },
+    { key: 'groups', tableName: 'Group'}
   ];
 
   dimensionsOrder = [
