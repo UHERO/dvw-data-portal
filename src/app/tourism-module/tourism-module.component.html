@@ -1,11 +1,13 @@
 <div id="wrapper" class="d-flex flex-wrap">
     <div id="sidebar">
+        <div class="additional-buttons d-flex justify-content-end mt-1 mb-n4">
+            <button type="button" class="btn btn-outline-info btn-sm clear-table" (click)="clearSelections()">Clear</button>
+        </div>
         <app-dimension-selector [selectedModule]="selectedModule" (updateDimensionSelection)="updateDimensions($event)">
         </app-dimension-selector>
     </div>
     <div id="content-col">
-        <div id="additional-buttons" class="d-flex justify-content-end mt-1 mb-n4">
-            <button *ngIf="displayTable" type="button" class="btn btn-outline-secondary btn-sm clear-table" (click)="clearSelections()">Clear All Selections</button>
+        <div class="additional-buttons d-flex justify-content-end mt-1 mb-n4">
             <a id="back-link" [routerLink]="['/']" class="btn btn-outline-info btn-sm ml-1"><span class="fas fa-arrow-left"></span> Home</a>
         </div>
         <div *ngIf="!displayTable" id="instructions">

@@ -182,12 +182,6 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
     const tableColumns = [];
     Object.keys(dimensions).forEach(key => tableColumns.push({ title: this.getDimensionColName(key), data: key }));
     tableColumns.push({ title: 'Units', data: 'units' });
-    tableColumns.forEach((col, index) => {
-      if (col.data === 'indicators') {
-        tableColumns.splice(index, 1);
-        tableColumns.unshift(col);
-      }
-    });
     dates.forEach((date) => {
       tableColumns.push({ title: date.tableDate, data: 'observations.' + date.tableDate });
     });

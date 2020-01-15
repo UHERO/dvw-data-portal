@@ -107,9 +107,16 @@ export class DimensionSelectorComponent implements OnInit, AfterViewInit, OnDest
       this.selectedOptions[key] = [];
     });
     this.dimensions.forEach((dim) => {
-      dim.options.forEach((opt) => {
-        opt.selected = false;
-      });
+      this.deselectOption(dim.options);
+    });
+  }
+
+  deselectOption(options) {
+    options.forEach((opt) => {
+      if (opt.children) {
+        this.deselectOption(opt.children);
+      }
+      opt.selected = false;
     });
   }
 }

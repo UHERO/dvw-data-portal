@@ -7,12 +7,12 @@
 
     #sidebar {
         // border-right: 1px solid $link-color;
-        width: 250px;
+        width: 225px;
         display: inline-block;
     }
 
     #content-col {
-        width: 705px;
+        width: 730px;
         min-height: 500px;
         display: inline-block;
         vertical-align: top;
@@ -22,16 +22,16 @@
             margin-left: 10px;
             width: 80%;
         }
+    }
 
-        #additional-buttons {
-            .btn {
-                padding: 0 0.25em;
-            }
-            
-            #back-link {
-                &:hover {
-                    color: #FFF;
-                }
+    .additional-buttons {
+        .btn {
+            padding: 0 0.25em;
+        }
+        
+        #back-link {
+            &:hover {
+                color: #FFF;
             }
         }
     }
