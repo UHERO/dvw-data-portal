@@ -4,7 +4,7 @@
     <ul #dimension [id]="selector.name">
       <ng-container *ngFor="let opt of selector.options; let i = index;">
         <ng-container *ngIf="!opt.children">
-            <li [class.selected]="opt.selected" (mousedown)="optSelectMouseEvent(opt, selector.name, selector.options, true)" (mouseup)="optSelectMouseEvent(opt, selector.name, selector.options, false)">
+            <li [class.selected]="opt.selected" matTooltipClass="custom-tooltip" matTooltip="{{ opt.info? opt.info : '' }}" (mousedown)="optSelectMouseEvent(opt, selector.name, selector.options, true)" (mouseup)="optSelectMouseEvent(opt, selector.name, selector.options, false)">
               {{opt.nameW}}</li>  
         </ng-container>
         <ng-container *ngIf="opt.header">

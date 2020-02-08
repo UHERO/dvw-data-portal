@@ -8,14 +8,16 @@ import {
   EventEmitter,
   ViewChildren,
   ElementRef,
-  QueryList
+  QueryList,
+  ViewEncapsulation
 } from '@angular/core';
 import { DvwApiService } from '../dvw-api.service';
 
 @Component({
   selector: 'app-dimension-selector',
   templateUrl: './dimension-selector.component.html',
-  styleUrls: ['./dimension-selector.component.scss']
+  styleUrls: ['./dimension-selector.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class DimensionSelectorComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() selectedModule: string;
