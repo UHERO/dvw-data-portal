@@ -28,7 +28,7 @@
         -moz-user-select: none;
         -ms-user-select: none;
         user-select: none;
-    
+
         li.group-expanded {
             padding-left: 15px;
 
@@ -43,5 +43,8 @@
             color: #FFF
         }
     }
-    
+}
+
+.custom-tooltip {
+    font-size: 0.75em;
 }

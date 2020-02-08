@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'https://stage-api.uhero.hawaii.edu/dvw'
+  apiUrl: 'https://api.uhero.hawaii.edu/dvw'
 };
 
 /*
