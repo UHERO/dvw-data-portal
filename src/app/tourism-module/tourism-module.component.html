@@ -18,7 +18,7 @@
         </app-module-table>
     </div>
     <div id="selectors" class="d-flex flex-row align-items-end">
-        <app-frequency-selector (updateFrequencySelection)="updateFrequency($event)"></app-frequency-selector>
+        <app-frequency-selector [freqs] = "frequencies" (updateFrequencySelection)="updateFrequency($event)"></app-frequency-selector>
         <app-year-selector *ngIf="!noData" [rangeLabel]="'From'" [dates]="datesSelected.fromYearList"
             [(selectedYear)]="datesSelected.selectedStartYear" (updateYearSelection)="updateDateAndTable($event, 'selectedStartYear')">
         </app-year-selector>

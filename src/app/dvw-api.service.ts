@@ -13,10 +13,28 @@ export class DvwApiService {
   private cachedDimensions = [];
   private cachedDimensionOptions = [];
   private cachedSeries = [];
+  private cachedFrequencies = [];
 
   constructor(private http: HttpClient, private _helper: HelperService) { }
 
   mapData = response => response.data;
+
+  mapFrequencies = (response) => {
+    const freqs = response.data;
+    const freqArray = [];
+    freqs.forEach((f) => {
+      if (f === 'A') {
+        freqArray.push({ value: 'A', label: 'Annual' });
+      }
+      if (f === 'Q') {
+        freqArray.push({ value: 'Q', label: 'Quarterly' });
+      }
+      if (f === 'M') {
+        freqArray.push({ value: 'M', label: 'Monthly' });
+      }
+    });
+    return freqArray;
+  }
 
   getDimensions(mod: string): any {
     if (this.cachedDimensions[mod]) {
@@ -80,6 +98,21 @@ export class DvwApiService {
         )
       );
       return moduleDimensionOptions$;
+    }
+  }
+
+  getFrequencies(mod: string, dimensions: string) {
+    if (this.cachedFrequencies[`${mod}:${dimensions}`]) {
+      return observableOf(this.cachedFrequencies[`${mod}:${dimensions}`]);
+    } else {
+      let freqs$ = this.http.get(`${API_URL}/freqavail/${mod}?${dimensions}`).pipe(
+        map(this.mapFrequencies),
+        tap(val => {
+          this.cachedFrequencies[`${mod}:${dimensions}`] = val;
+          freqs$ = null;
+        }),
+      );
+      return freqs$;
     }
   }
 
