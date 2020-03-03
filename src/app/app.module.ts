@@ -18,7 +18,7 @@ import { ModuleTableComponent } from './module-table/module-table.component';
 import { YearSelectorComponent } from './year-selector/year-selector.component';
 import { MonthSelectorComponent } from './month-selector/month-selector.component';
 import { QuarterSelectorComponent } from './quarter-selector/quarter-selector.component';
-import { MatTooltipModule } from '@angular/material/tooltip'; 
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [

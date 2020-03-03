@@ -1,6 +1,6 @@
 <form id="frequency-form" class="mr-1">
   <label>Frequency</label>
     <select size="3" name="frequency" [(ngModel)]="selectedValue" (change)="changeFrequency($event.target.value)">
-      <option *ngFor="let frequency of frequencies" [value]="frequency.value">{{frequency.label}}</option>
+      <option *ngFor="let frequency of freqs" [value]="frequency.value">{{frequency.label}}</option>
     </select>
 </form>

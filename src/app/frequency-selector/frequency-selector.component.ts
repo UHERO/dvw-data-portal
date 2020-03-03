@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 @Component({
@@ -8,12 +8,8 @@ import { FormGroup } from '@angular/forms';
 })
 export class FrequencySelectorComponent implements OnInit {
   selectedValue: string;
+  @Input() freqs;
   @Output() updateFrequencySelection: EventEmitter<any> = new EventEmitter();
-  frequencies = [
-    { value: 'A', label: 'Annual'},
-    { value: 'Q', label: 'Quarterly'},
-    { value: 'M', label: 'Monthly'},
-  ];
 
   constructor() { }
 

@@ -25,6 +25,7 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
   invalidDates: string;
   displayTable = false;
   loading = false;
+  frequencies: Array<any>;
   @ViewChild(DimensionSelectorComponent, { static: false })
   public sidebar: DimensionSelectorComponent;
   @ViewChild(FrequencySelectorComponent, { static: false })
@@ -51,6 +52,7 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
     this.noData = true;
     this.noSeriesAvailable = false;
     this.tableData = [];
+    this.frequencies = [];
     this.sidebar.resetSelections();
     this.freqSelector.resetFrequency();
   }
@@ -72,11 +74,24 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
         return dimensions[key].length > 0;
       }) === true;
     }
+    if (allDimensionsSelected && !frequency) {
+      // API Frequency endpoint has 5 required parameters
+      const reqParams = ['i', 'm', 'd', 'g', 'c'];
+      const moduleParams = Object.keys(dimensions).map(k => k.substring(0, 1));
+      const unusedParams = reqParams.filter(p => !moduleParams.includes(p));
+      const freqApiParam = this.formatApiParam(dimensions, unusedParams);
+      this.getFrequencies(freqApiParam);
+    }
     if (allDimensionsSelected && frequency && !this.invalidDates) {
-      // this.displayInstructions = false;
       this.loading = true;
       this.getSeriesData(dimensions, frequency);
     }
+  }
+
+  getFrequencies(apiParam: string) {
+    this.apiService.getFrequencies(this.selectedModule, apiParam).subscribe((freqs) => {
+      this.frequencies = freqs;
+    });
   }
 
   getSeriesData(dimensions: any, frequency: string) {
@@ -117,7 +132,7 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
     });
   }
 
-  formatApiParam = (dimensions: any) => {
+  formatApiParam = (dimensions: any, unusedFreqParams?: Array<any>) => {
     let apiParam = '';
     const dimensionKeys = Object.keys(dimensions);
     dimensionKeys.forEach((key, index) => {
@@ -132,6 +147,9 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
         apiParam += `&`;
       }
     });
+    if (unusedFreqParams) {
+      unusedFreqParams.forEach((param) => apiParam += `&${param}=0`);
+    }
     return apiParam;
   }
 
