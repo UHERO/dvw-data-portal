@@ -4,14 +4,14 @@
     <ul #dimension [id]="selector.name">
       <ng-container *ngFor="let opt of selector.options; let i = index;">
         <ng-container *ngIf="!opt.children">
-            <li [class.selected]="opt.selected" matTooltipClass="custom-tooltip" matTooltip="{{ opt.info? opt.info : '' }}" (mousedown)="optSelectMouseEvent(opt, selector.name, selector.options, true)" (mouseup)="optSelectMouseEvent(opt, selector.name, selector.options, false)">
+            <li [class.selected]="opt.selected" matTooltipClass="custom-tooltip" matTooltip="{{ opt.info ? opt.info : '' }}" (mousedown)="optSelectMouseEvent(opt, selector.name, selector.options, true)" (mouseup)="optSelectMouseEvent(opt, selector.name, selector.options, false)">
               {{opt.nameW}}</li>  
         </ng-container>
         <ng-container *ngIf="opt.header">
-          <li class="opt-group" (click)="toggle($event, opt)"
+          <li class="opt-group" (click)="toggle($event, opt)" matTooltipClass="custom-tooltip" matTooltip="{{ opt.info ? opt.info : '' }}"
             >{{opt.active ? optgroupCollapse + ' ' + opt.nameW : optgroupExpand + ' ' + opt.nameW}}</li>
             <ng-container *ngIf="opt.active">
-              <li [class.selected]="child.selected" [class.group-expanded]="opt.active" *ngFor="let child of opt.children"
+              <li [class.selected]="child.selected" [class.group-expanded]="opt.active" *ngFor="let child of opt.children" matTooltipClass="custom-tooltip" matTooltip="{{ child.info ? child.info : '' }}"
               (mousedown)="optSelectMouseEvent(child, selector.name, opt.children, true)" (mouseup)="optSelectMouseEvent(child, selector.name, opt.children, false)">{{child.nameW}}</li>  
             </ng-container>
         </ng-container>

@@ -90,7 +90,7 @@ export class DvwApiService {
               const mappedResponse = mapDimensionOptions(res);
               const selector = { name: d, options: mappedResponse };
               selectors.push(selector);
-              this.cachedDimensionOptions[mod] = selectors;
+              this.cachedDimensionOptions[mod] = moduleDimensionOptions$;
               moduleDimensionOptions$ = null;
               return selector;
             })
