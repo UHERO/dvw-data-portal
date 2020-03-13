@@ -199,30 +199,30 @@ export class HelperService {
 
   minYearQuarters(month) {
     const q = ['Q4', 'Q3', 'Q2', 'Q1'];
-    if (4 <= month && month < 7) {
-      return q.slice(0, 3);
+    switch(month) {
+      case 4 <= month && month < 7:
+        return q.slice(0, 3);
+      case 7 <= month && month < 10:
+        return q.slice(0, 2);
+      case 10 <= month:
+        return q.slice(0, 1);
+      default:
+        return q;
     }
-    if (7 <= month && month < 10) {
-      return q.slice(0, 2);
-    }
-    if (10 <= month) {
-      return q.slice(0, 1);
-    }
-    return q;
   }
 
   maxYearQuarters(month) {
     const q = ['Q4', 'Q3', 'Q2', 'Q1'];
-    if (1 <= month && month < 4) {
-      return q.slice(3);
+    switch(month) {
+      case 1 <= month && month < 4:
+        return q.slice(3);
+      case 4 <= month && month < 7:
+        return q.slice(2);
+      case 7 <= month && month < 10:
+        return q.slice(1);
+      default:
+        return q;
     }
-    if (4 <= month && month < 7) {
-      return q.slice(2);
-    }
-    if (7 <= month && month < 10) {
-      return q.slice(1);
-    }
-    return q;
   }
 
   // Create list of months for month range selectors
