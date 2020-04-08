@@ -1,3 +1,7 @@
+<div id="module-title-bar">
+    <h1 id="module-name">{{moduleName}}</h1>
+    <hr>
+</div>
 <div id="wrapper" class="d-flex flex-wrap">
     <div id="sidebar">
         <div class="additional-buttons d-flex justify-content-end mt-1 mb-n4">
@@ -10,7 +14,7 @@
     <div id="content-col">
         <div class="additional-buttons d-flex justify-content-end mt-1 mb-n4">
             <a id="back-link" [routerLink]="['/']" class="btn btn-outline-info btn-sm ml-1"><span
-                    class="fas fa-arrow-left"></span> Home</a>
+                    class="fas fa-arrow-left"></span> Back</a>
         </div>
         <div *ngIf="!displayTable" id="instructions">
             <p> To generate a table, make at least one selection in each of the categories to the left, then choose a

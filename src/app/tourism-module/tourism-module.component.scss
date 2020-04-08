@@ -1,51 +1,61 @@
-@import 'abstracts/variables';
+@import "abstracts/variables";
+
+#module-title-bar {
+  width: 960px;
+
+  #module-name {
+    color: $dark-gray;
+    font-size: 1.4em;
+    text-transform: uppercase;
+  }
+}
 
 #wrapper {
-    width: 960px;
-    overflow-x: auto;
-    overflow-y: hidden;
+  width: 960px;
+  overflow-x: auto;
+  overflow-y: hidden;
 
-    #sidebar {
-        // border-right: 1px solid $link-color;
-        width: 225px;
-        display: inline-block;
+  #sidebar {
+    // border-right: 1px solid $link-color;
+    width: 225px;
+    display: inline-block;
+  }
+
+  #content-col {
+    width: 730px;
+    min-height: 500px;
+    display: inline-block;
+    vertical-align: top;
+
+    #instructions {
+      font-size: 0.9em;
+      margin-top: 35px;
+      margin-left: 25px;
+      width: 80%;
+    }
+  }
+
+  .additional-buttons {
+    .btn {
+      padding: 0 0.25em;
     }
 
-    #content-col {
-        width: 730px;
-        min-height: 500px;
-        display: inline-block;
-        vertical-align: top;
-
-        #instructions {
-            font-size: 0.9em;
-            margin-top: 35px;
-            margin-left: 25px;
-            width: 80%;
-        }
+    #back-link {
+      &:hover {
+        color: #fff;
+      }
     }
+  }
 
-    .additional-buttons {
-        .btn {
-            padding: 0 0.25em;
-        }
-        
-        #back-link {
-            &:hover {
-                color: #FFF;
-            }
-        }
+  #get-data {
+    display: inline-block;
+  }
+
+  #selectors {
+    margin-left: 5px;
+
+    .invalid-dates {
+      display: inline-block;
     }
-
-    #get-data {
-        display: inline-block;
-    }
-
-    #selectors {
-        margin-left: 5px;
-
-        .invalid-dates {
-            display: inline-block;
-        }
-    }
+  }
 }
