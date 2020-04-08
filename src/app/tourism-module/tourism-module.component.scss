@@ -2,11 +2,8 @@
 
 #module-title-bar {
 	width: 960px;
-	border-bottom: 1px solid #CCC;
-	margin-bottom: 15px;
-	padding-bottom: 15px;
 
-  #module-name {
+	#module-name {
     color: $dark-gray;
     font-size: 1.4em;
 		text-transform: uppercase;
