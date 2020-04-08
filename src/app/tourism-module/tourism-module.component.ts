@@ -14,6 +14,7 @@ import { FrequencySelectorComponent } from '../frequency-selector/frequency-sele
 })
 export class TourismModuleComponent implements OnInit, OnDestroy {
   selectedModule: string;
+  moduleName: string;
   selectedDimensions: any;
   selectedFrequency: string;
   routeSub: Subscription;
@@ -26,9 +27,9 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
   displayTable = false;
   loading = false;
   frequencies: Array<any>;
-  @ViewChild(DimensionSelectorComponent, { static: false })
+  @ViewChild(DimensionSelectorComponent)
   public sidebar: DimensionSelectorComponent;
-  @ViewChild(FrequencySelectorComponent, { static: false })
+  @ViewChild(FrequencySelectorComponent)
   public freqSelector: FrequencySelectorComponent;
 
 
@@ -38,11 +39,29 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.routeSub = this.route.paramMap.subscribe((params) => {
       this.selectedModule = params.get('id');
+      this.moduleName = this.getModuleName(this.selectedModule);
     });
   }
 
   ngOnDestroy() {
     this.routeSub.unsubscribe();
+  }
+
+  getModuleName = (selectedModule: string) => {
+    switch(selectedModule) {
+      case 'trend':
+        return 'Visitor Trends';
+      case 'char':
+        return 'Visitor Characteristics';
+      case 'airseat':
+        return 'Air Seats to Hawaii';
+      case 'exp':
+        return 'Expenditure Pattern';
+      case 'hotel':
+        return 'Hotel Performance';
+      default:
+        return '';
+    }
   }
 
   clearSelections() {
