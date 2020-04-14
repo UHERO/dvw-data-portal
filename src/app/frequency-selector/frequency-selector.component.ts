@@ -8,7 +8,8 @@ import { FormGroup } from '@angular/forms';
 })
 export class FrequencySelectorComponent implements OnInit {
   selectedValue: string;
-  @Input() freqs;
+  @Input() freqs: Array<any>;
+  @Input() invalidDates: string;
   @Output() updateFrequencySelection: EventEmitter<any> = new EventEmitter();
 
   constructor() { }

@@ -74,15 +74,18 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
     this.frequencies = [];
     this.sidebar.resetSelections();
     this.freqSelector.resetFrequency();
+    this.frequencies = [];
   }
 
   updateDimensions(event: any) {
     this.selectedDimensions = Object.assign({}, event);
+    this.datesSelected = {} as DatesSelected;
     this.checkUserSelections(this.selectedDimensions, this.selectedFrequency);
   }
 
   updateFrequency(event: any) {
     this.selectedFrequency = event;
+    this.datesSelected = {} as DatesSelected;
     this.checkUserSelections(this.selectedDimensions, this.selectedFrequency);
   }
 
@@ -232,11 +235,11 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
 
   updateDateAndTable(event: any, selectedDate: string) {
     this.datesSelected[selectedDate] = event;
-    this.updateDatatable(this.datesSelected, this.selectedFrequency, this.tableData);
+    this.updateDatatable(this.datesSelected);
   }
 
-  updateDatatable(datesSelected: DatesSelected, freq: string, tableData: Array<any>) {
-    const validDates = this.checkValidDates(this.datesSelected);
+  updateDatatable(datesSelected: DatesSelected) {
+    const validDates = this.checkValidDates(datesSelected);
     if (validDates) {
       this.invalidDates = null;
       this.checkUserSelections(this.selectedDimensions, this.selectedFrequency);
