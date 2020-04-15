@@ -210,6 +210,7 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
     dimensions[key].forEach((opt) => {
       if (opt.handle === column) {
         serie[key] = opt.nameT ? opt.nameT : opt.nameW;
+        serie.order = serie.order ? serie.order + opt.order : `${opt.order}`
         if (opt.unit) {
           serie.units = opt.unit;
           serie.decimal = opt.decimal;
@@ -219,7 +220,7 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
   }
 
   createColumns = (dates: Array<any>, dimensions: any) => {
-    const tableColumns = [];
+    const tableColumns = [{ title: 'Id', data: 'order'}];
     Object.keys(dimensions).forEach(key => tableColumns.push({ title: this.getDimensionColName(key), data: key }));
     tableColumns.push({ title: 'Units', data: 'units' });
     dates.forEach((date) => {

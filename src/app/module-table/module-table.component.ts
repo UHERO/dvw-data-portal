@@ -40,11 +40,14 @@ export class ModuleTableComponent implements OnInit, OnChanges {
     }
     const fixedColumns = [...Object.keys(this.dimensions), 'units'];
     const fixedColumnsLength = fixedColumns.length; // include units column to module dimensions
+    console.log('rows', tableData.series)
     this.tableWidget = moduleTable.DataTable({
       data: tableData.series,
       dom: 'Bt',
       columns: tableColumns,
       columnDefs: [
+        // Hide ID column -- used for initial ordering
+        { 'visible': false, 'targets': 0 },
         {
           className: 'td-left',
           targets: Array.apply(null, { length: fixedColumnsLength }).map(Number.call, Number)
@@ -76,7 +79,17 @@ export class ModuleTableComponent implements OnInit, OnChanges {
           className: 'btn btn-outline-secondary',
           text: '<span class="fas fa-file-excel" aria-hidden="true" title="Excel"></span>',
           exportOptions: {
-            columns: ':visible'
+            columns: ':visible',
+          },
+          customize: function (xlsx) {
+            console.log(xlsx);
+            const sheet = xlsx.xl.worksheets['sheet1.xml'];
+            const sourceRow = tableData.series.length + 3;
+            const lastRow = $(sheet).find('row:last-child');
+            lastRow.after(`<row r="${sourceRow}"><c t="inlineStr" r="A${sourceRow}"><is><t xml:space="preserve"></t></is></c></row>
+            <row r="${sourceRow + 1}"><c t="inlineStr" r="A${sourceRow + 1}"><is><t xml:space="preserve"></t></is></c></row>`);
+            $(`c[r=A${sourceRow}] t`, sheet).text('Data source: Hawaii Tourism Authority')
+            $(`c[r=A${sourceRow + 1}] t`, sheet).text('Data is updated monthly by Research & Economic Analysis Division, State of Hawaii Department of Business, Economic Development and Tourism.')
           },
         }, {
           extend: 'csv',
@@ -87,6 +100,7 @@ export class ModuleTableComponent implements OnInit, OnChanges {
           },
         }, {
           extend: 'pdf',
+          orientation: 'landscape',
           className: 'btn btn-outline-secondary',
           text: '<span class="fas fa-file-pdf" aria-hidden="true" title="PDF"></span>',
           exportOptions: {
@@ -100,8 +114,8 @@ export class ModuleTableComponent implements OnInit, OnChanges {
               row.forEach((item) => {
                 paddedRow.push(item);
               });
-              const rowDiff = paddedRow.length % 10;
-              let addString = 10 - rowDiff;
+              const rowDiff = paddedRow.length % 15;
+              let addString = 15 - rowDiff;
               while (addString) {
                 paddedRow.push({ text: ' ', style: '' });
                 addString -= 1;
@@ -139,14 +153,14 @@ export class ModuleTableComponent implements OnInit, OnChanges {
               // Get data from each original row excluding fixed columns and sources
               const nonFixedCols = row.slice(fixedColumnsLength, row.length);
               // Split data into groups of arrays with max length == 7
-              const maxLength = fixedColumnsLength === 4 ? 4 : 3;
+              const maxLength = fixedColumnsLength === 4 ? 11 : 10;
               const split = splitTable(nonFixedCols, maxLength);
               for (let newRow of split) {
                 fixed.forEach((c) => {
                   const cCopy = Object.assign({}, c);
                   newRow.unshift(cCopy);
                 });
-                if (newRow.length < 10) {
+                if (newRow.length < 15) {
                   newRow = rowRightPad(newRow);
                 }
                 // Right align cell text
@@ -167,7 +181,7 @@ export class ModuleTableComponent implements OnInit, OnChanges {
             docContent.table.headerRows = 0;
             docContent.table.body = formattedTable;
             doc.content.push({
-              text: 'Compiled by Research & Economic Analysis Division, State of Hawaii Department of Business, Economic Development and Tourism. For more information, please visit: http://dbedt.hawaii.gov/economic',
+              text: 'Data source: Hawaii Tourism Authority\r\rData is updated monthly by Research & Economic Analysis Division, State of Hawaii Department of Business, Economic Development and Tourism.',
             });
           }
         }, {
@@ -265,8 +279,8 @@ export class ModuleTableComponent implements OnInit, OnChanges {
               });
             });
             $(win.document.body)
-              .find('br:last-child')
-              .after('<p>Compiled by Research & Economic Analysis Division, State of Hawaii Department of Business, Economic Development and Tourism. For more information, please visit: http://dbedt.hawaii.gov/economic</p>');
+              .find('table:last-child')
+              .after('<p>Data source: Hawaii Tourism Authority<br /><br />Data is updated monthly by Research & Economic Analysis Division, State of Hawaii Department of Business, Economic Development and Tourism.</p>');
           }
         }
       ]
