@@ -208,15 +208,30 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
 
   matchDimensionAndColumn(dimensions: any, key: string, column: string, serie: any) {
     dimensions[key].forEach((opt) => {
+      console.log(opt)
       if (opt.handle === column) {
         serie[key] = opt.nameT ? opt.nameT : opt.nameW;
-        serie.order = serie.order ? serie.order + opt.order : `${opt.order}`
+        //serie.order = serie.order ? serie.order + `${opt.level}-${opt.order}-` : `${opt.level}-${opt.order}-`
+        serie.order = serie.order ? serie.order + this.setSeriesTableOrder(opt.level, opt.order) : this.setSeriesTableOrder(opt.level, opt.order)
         if (opt.unit) {
           serie.units = opt.unit;
           serie.decimal = opt.decimal;
         }
       }
     });
+    console.log('serie', serie)
+  }
+
+  setSeriesTableOrder(level:number, index: number) {
+    const ordering = [level, index];
+    const pad = '00';
+    let result = '';
+    ordering.forEach((index) => {
+      const str = '' + index;
+      const paddedStr = pad.substring(0, pad.length - str.length) + str;
+      result += paddedStr;
+    });
+    return result;
   }
 
   createColumns = (dates: Array<any>, dimensions: any) => {
