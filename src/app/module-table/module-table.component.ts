@@ -114,8 +114,8 @@ export class ModuleTableComponent implements OnInit, OnChanges {
             columns: ':visible'
           },
           customize(doc) {
-            // Table rows should be divisible by 15
-            // Maintain consistant table width (i.e. add empty strings if row has less than 15 data cells)
+            // Table rows should be divisible by 12
+            // Maintain consistant table width (i.e. add empty strings if row has less than 12 data cells)
             function rowRightPad(row) {
               const paddedRow = [];
               row.forEach((item) => {
