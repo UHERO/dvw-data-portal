@@ -56,9 +56,9 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
       case 'airseat':
         return 'Air Seats to Hawaii';
       case 'exp':
-        return 'Expenditure Pattern';
+        return 'Expenditure Patterns';
       case 'hotel':
-        return 'Hotel Performance';
+        return 'Hotel Performance Indicators';
       default:
         return '';
     }
