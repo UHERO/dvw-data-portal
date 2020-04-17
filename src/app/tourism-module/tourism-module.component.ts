@@ -190,8 +190,20 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
         }
       });
       serie.observations = results;
+      this.setSeriesTableOrder(serie);
     });
     return series;
+  }
+
+  setSeriesTableOrder(serie: any) {
+    const dimensionKeys = Object.keys(serie.dimensions);
+    dimensionKeys.forEach((key) => {
+      serie.dimensions[key].forEach((d) => {
+        if (serie.columns.includes(d.handle)) {
+          serie.order = serie.order ? serie.order + this.formatSeriesOrder(d.level, d.order) : this.formatSeriesOrder(d.level, d.order)
+        }
+      });
+    });
   }
 
   identifySeriesColumns(serie: any, dimensions: any) {
@@ -218,8 +230,20 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
     });
   }
 
+  formatSeriesOrder(level:number, index: number) {
+    const ordering = [level, index];
+    const pad = '00';
+    let result = '';
+    ordering.forEach((index) => {
+      const str = '' + index;
+      const paddedStr = pad.substring(0, pad.length - str.length) + str;
+      result += paddedStr;
+    });
+    return result;
+  }
+
   createColumns = (dates: Array<any>, dimensions: any) => {
-    const tableColumns = [];
+    const tableColumns = [{ title: 'Id', data: 'order'}];
     Object.keys(dimensions).forEach(key => tableColumns.push({ title: this.getDimensionColName(key), data: key }));
     tableColumns.push({ title: 'Units', data: 'units' });
     dates.forEach((date) => {

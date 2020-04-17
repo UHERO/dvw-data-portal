@@ -40,11 +40,17 @@ export class ModuleTableComponent implements OnInit, OnChanges {
     }
     const fixedColumns = [...Object.keys(this.dimensions), 'units'];
     const fixedColumnsLength = fixedColumns.length; // include units column to module dimensions
+    const sourceInfo = [
+      'Data source: Hawaii Tourism Authority',
+      'Data is updated monthly by Research & Economic Analysis Division, State of Hawaii Department of Business, Economic Development and Tourism.'
+    ]
     this.tableWidget = moduleTable.DataTable({
       data: tableData.series,
       dom: 'Bt',
       columns: tableColumns,
       columnDefs: [
+        // Hide ID column -- used for initial ordering
+        { 'visible': false, 'targets': 0 },
         {
           className: 'td-left',
           targets: Array.apply(null, { length: fixedColumnsLength }).map(Number.call, Number)
@@ -76,7 +82,18 @@ export class ModuleTableComponent implements OnInit, OnChanges {
           className: 'btn btn-outline-secondary',
           text: '<span class="fas fa-file-excel" aria-hidden="true" title="Excel"></span>',
           exportOptions: {
-            columns: ':visible'
+            columns: ':visible',
+          },
+          customize: function (xlsx) {
+            const sheet = xlsx.xl.worksheets['sheet1.xml'];
+            const sourceRow = tableData.series.length + 3;
+            const lastRow = $(sheet).find('row:last-child');
+            lastRow.after(
+              `<row r="${sourceRow}"><c t="inlineStr" r="A${sourceRow}"><is><t xml:space="preserve"></t></is></c></row>
+              <row r="${sourceRow + 2}"><c t="inlineStr" r="A${sourceRow + 2}"><is><t xml:space="preserve"></t></is></c></row>`
+            );
+            $(`c[r=A${sourceRow}] t`, sheet).text(sourceInfo[0]);
+            $(`c[r=A${sourceRow + 2}] t`, sheet).text(sourceInfo[1]);
           },
         }, {
           extend: 'csv',
@@ -85,23 +102,27 @@ export class ModuleTableComponent implements OnInit, OnChanges {
           exportOptions: {
             columns: ':visible'
           },
+          customize(csv) {
+            return csv + `\n${sourceInfo[0]}\n\n"${sourceInfo[1]}"`
+          }
         }, {
           extend: 'pdf',
+          orientation: 'landscape',
           className: 'btn btn-outline-secondary',
           text: '<span class="fas fa-file-pdf" aria-hidden="true" title="PDF"></span>',
           exportOptions: {
             columns: ':visible'
           },
           customize(doc) {
-            // Table rows should be divisible by 10
-            // Maintain consistant table width (i.e. add empty strings if row has less than 10 data cells)
+            // Table rows should be divisible by 12
+            // Maintain consistant table width (i.e. add empty strings if row has less than 12 data cells)
             function rowRightPad(row) {
               const paddedRow = [];
               row.forEach((item) => {
                 paddedRow.push(item);
               });
-              const rowDiff = paddedRow.length % 10;
-              let addString = 10 - rowDiff;
+              const rowDiff = paddedRow.length % 12;
+              let addString = 12 - rowDiff;
               while (addString) {
                 paddedRow.push({ text: ' ', style: '' });
                 addString -= 1;
@@ -128,7 +149,6 @@ export class ModuleTableComponent implements OnInit, OnChanges {
             // Get original table object
             const docContent = doc.content.find(c => c.hasOwnProperty('table'));
             const currentTable = docContent.table.body;
-            const sources: Array<any> = [];
             const formattedTable: Array<any> = [];
             currentTable.forEach((row, index) => {
               let counter = currentTable.length;
@@ -138,15 +158,16 @@ export class ModuleTableComponent implements OnInit, OnChanges {
               });
               // Get data from each original row excluding fixed columns and sources
               const nonFixedCols = row.slice(fixedColumnsLength, row.length);
-              // Split data into groups of arrays with max length == 7
-              const maxLength = fixedColumnsLength === 4 ? 4 : 3;
+              // Split data into groups of arrays with max length == 11
+              const maxLength = fixedColumnsLength === 4 ? 8 : 9;
+              console.log(maxLength)
               const split = splitTable(nonFixedCols, maxLength);
               for (let newRow of split) {
                 fixed.forEach((c) => {
                   const cCopy = Object.assign({}, c);
                   newRow.unshift(cCopy);
                 });
-                if (newRow.length < 10) {
+                if (newRow.length < 12) {
                   newRow = rowRightPad(newRow);
                 }
                 // Right align cell text
@@ -167,7 +188,7 @@ export class ModuleTableComponent implements OnInit, OnChanges {
             docContent.table.headerRows = 0;
             docContent.table.body = formattedTable;
             doc.content.push({
-              text: 'Compiled by Research & Economic Analysis Division, State of Hawaii Department of Business, Economic Development and Tourism. For more information, please visit: http://dbedt.hawaii.gov/economic',
+              text: `${sourceInfo[0]}\n\n${sourceInfo[1]}`
             });
           }
         }, {
@@ -202,13 +223,14 @@ export class ModuleTableComponent implements OnInit, OnChanges {
             // Get array of columns minus fixed columns
             const columns = tableColumns.slice(fixedColumnsLength);
             // Split columns into arrays with max length of 7 (total of 10 cells per row)
-            const maxLength = fixedColumnsLength === 4 ? 6 : 7;
+            const maxLength = fixedColumnsLength === 4 ? 7 : 8;
             const tableHeaders = splitTable(columns, maxLength);
             const newTables = [];
 
             // Add fixed columns to the new table headers and create a new table for each header
             tableHeaders.forEach((header) => {
-              for (let i = fixedColumnsLength - 1; i >= 0; i--) {
+              // start index set to 1 to skip invisible ID column
+              for (let i = fixedColumnsLength - 1; i >= 1; i--) {
                 header.unshift(tableColumns[i]);
               }
               let html = '<table class="dataTable no-footer"><tr>';
@@ -221,7 +243,8 @@ export class ModuleTableComponent implements OnInit, OnChanges {
 
             // Add data from indicators to each new table
             tableData.series.forEach((ind, index) => {
-              let obsCounter = 0;
+              // start index set to 1 to skip invisible ID column
+              let obsCounter = 1;
               const observations = Object.keys(ind.observations);
               // Sort observations keys to match order of table date columns
               const sortedObs = sortObsDates(observations, dateArray);
@@ -265,8 +288,8 @@ export class ModuleTableComponent implements OnInit, OnChanges {
               });
             });
             $(win.document.body)
-              .find('br:last-child')
-              .after('<p>Compiled by Research & Economic Analysis Division, State of Hawaii Department of Business, Economic Development and Tourism. For more information, please visit: http://dbedt.hawaii.gov/economic</p>');
+              .find('table:last-child')
+              .after(`<p>${sourceInfo[0]}<br /><br />${sourceInfo[1]}</p>`);
           }
         }
       ]
