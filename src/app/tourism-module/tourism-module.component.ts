@@ -190,8 +190,20 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
         }
       });
       serie.observations = results;
+      this.setSeriesTableOrder(serie);
     });
     return series;
+  }
+
+  setSeriesTableOrder(serie: any) {
+    const dimensionKeys = Object.keys(serie.dimensions);
+    dimensionKeys.forEach((key) => {
+      serie.dimensions[key].forEach((d) => {
+        if (serie.columns.includes(d.handle)) {
+          serie.order = serie.order ? serie.order + this.formatSeriesOrder(d.level, d.order) : this.formatSeriesOrder(d.level, d.order)
+        }
+      });
+    });
   }
 
   identifySeriesColumns(serie: any, dimensions: any) {
@@ -208,21 +220,17 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
 
   matchDimensionAndColumn(dimensions: any, key: string, column: string, serie: any) {
     dimensions[key].forEach((opt) => {
-      console.log(opt)
       if (opt.handle === column) {
         serie[key] = opt.nameT ? opt.nameT : opt.nameW;
-        //serie.order = serie.order ? serie.order + `${opt.level}-${opt.order}-` : `${opt.level}-${opt.order}-`
-        serie.order = serie.order ? serie.order + this.setSeriesTableOrder(opt.level, opt.order) : this.setSeriesTableOrder(opt.level, opt.order)
         if (opt.unit) {
           serie.units = opt.unit;
           serie.decimal = opt.decimal;
         }
       }
     });
-    console.log('serie', serie)
   }
 
-  setSeriesTableOrder(level:number, index: number) {
+  formatSeriesOrder(level:number, index: number) {
     const ordering = [level, index];
     const pad = '00';
     let result = '';

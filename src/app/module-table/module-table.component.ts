@@ -50,7 +50,7 @@ export class ModuleTableComponent implements OnInit, OnChanges {
       columns: tableColumns,
       columnDefs: [
         // Hide ID column -- used for initial ordering
-        //{ 'visible': false, 'targets': 0 },
+        { 'visible': false, 'targets': 0 },
         {
           className: 'td-left',
           targets: Array.apply(null, { length: fixedColumnsLength }).map(Number.call, Number)
