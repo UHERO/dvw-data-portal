@@ -223,13 +223,14 @@ export class ModuleTableComponent implements OnInit, OnChanges {
             // Get array of columns minus fixed columns
             const columns = tableColumns.slice(fixedColumnsLength);
             // Split columns into arrays with max length of 7 (total of 10 cells per row)
-            const maxLength = fixedColumnsLength === 4 ? 6 : 7;
+            const maxLength = fixedColumnsLength === 4 ? 7 : 8;
             const tableHeaders = splitTable(columns, maxLength);
             const newTables = [];
 
             // Add fixed columns to the new table headers and create a new table for each header
             tableHeaders.forEach((header) => {
-              for (let i = fixedColumnsLength - 1; i >= 0; i--) {
+              // start index set to 1 to skip invisible ID column
+              for (let i = fixedColumnsLength - 1; i >= 1; i--) {
                 header.unshift(tableColumns[i]);
               }
               let html = '<table class="dataTable no-footer"><tr>';
@@ -242,7 +243,8 @@ export class ModuleTableComponent implements OnInit, OnChanges {
 
             // Add data from indicators to each new table
             tableData.series.forEach((ind, index) => {
-              let obsCounter = 0;
+              // start index set to 1 to skip invisible ID column
+              let obsCounter = 1;
               const observations = Object.keys(ind.observations);
               // Sort observations keys to match order of table date columns
               const sortedObs = sortObsDates(observations, dateArray);
