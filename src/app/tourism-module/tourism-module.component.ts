@@ -58,7 +58,7 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
       case 'exp':
         return 'Expenditure Patterns';
       case 'hotel':
-        return 'Hotel Performance Indicators';
+        return 'Hotel Performance';
       default:
         return '';
     }
