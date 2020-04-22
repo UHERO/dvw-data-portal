@@ -116,7 +116,7 @@ export class ModuleTableComponent implements OnInit, OnChanges {
             return csv + `\n\n"${sourceInfo[0]}"\n"${sourceInfo[1]}"\n"${sourceInfo[2]}"\n"${sourceInfo[3]}"`
           }
         }, {
-          extend: 'pdf',
+          extend: 'pdfHtml5',
           orientation: 'landscape',
           className: 'btn btn-outline-secondary',
           text: '<span class="fas fa-file-pdf" aria-hidden="true" title="PDF"></span>',
@@ -125,15 +125,15 @@ export class ModuleTableComponent implements OnInit, OnChanges {
           },
           title: tableTitle,
           customize(doc) {
-            // Table rows should be divisible by 12
-            // Maintain consistant table width (i.e. add empty strings if row has less than 12 data cells)
+            // Table rows should be divisible by 10
+            // Maintain consistant table width (i.e. add empty strings if row has less than 10 data cells)
             function rowRightPad(row) {
               const paddedRow = [];
               row.forEach((item) => {
                 paddedRow.push(item);
               });
-              const rowDiff = paddedRow.length % 13;
-              let addString = 13 - rowDiff;
+              const rowDiff = paddedRow.length % 10;
+              let addString = 10 - rowDiff;
               while (addString) {
                 paddedRow.push({ text: ' ', style: '' });
                 addString -= 1;
@@ -154,7 +154,7 @@ export class ModuleTableComponent implements OnInit, OnChanges {
             }
             function noWrap(array) {
               array.forEach((cell) => {
-                cell.noWrap = true;
+                cell.noWrap = false;
               });
             }
             doc.styles.title.alignment = 'left';
@@ -171,15 +171,15 @@ export class ModuleTableComponent implements OnInit, OnChanges {
               });
               // Get data from each original row excluding fixed columns and sources
               const nonFixedCols = row.slice(fixedColumnsLength, row.length);
-              // Split data into groups of arrays with max length == 11
-              const maxLength = fixedColumnsLength === 4 ? 9 : 10;
+              // Split data into groups of arrays with max length == 10
+              const maxLength = fixedColumnsLength === 4 ? 6 : 7;
               const split = splitTable(nonFixedCols, maxLength);
               for (let newRow of split) {
                 fixed.forEach((c) => {
                   const cCopy = Object.assign({}, c);
                   newRow.unshift(cCopy);
                 });
-                if (newRow.length < 13) {
+                if (newRow.length < 10) {
                   newRow = rowRightPad(newRow);
                 }
                 // Right align cell text
@@ -194,11 +194,13 @@ export class ModuleTableComponent implements OnInit, OnChanges {
                 }
               }
             });
+            console.log(doc)
             doc.defaultStyle.fontSize = 10;
             doc.styles.tableHeader.fontSize = 10;
             docContent.table.dontBreakRows = true;
             docContent.table.headerRows = 0;
             docContent.table.body = formattedTable;
+            doc.content[1].table.widths = [...new Array(10)].map(() => '10%');
             doc.content.push({
               text: `\n${sourceInfo[0]}\n${sourceInfo[1]}\n${sourceInfo[2]}\n${sourceInfo[3]}`
             });
