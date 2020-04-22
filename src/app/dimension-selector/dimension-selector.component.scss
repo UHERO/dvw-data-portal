@@ -18,7 +18,7 @@
         font-family: 'Font Awesome 5 Free', sans-serif;
         list-style: none;
         width: 220px;
-        height: 200px;
+        max-height: 200px;
         overflow-y: auto;
         font-size: 0.8em;
         padding: 0;
@@ -42,6 +42,9 @@
             background-color: $selected-option-color;
             color: #FFF
         }
+    }
+    ul.fixed-height {
+        height: 200px;
     }
 }
 

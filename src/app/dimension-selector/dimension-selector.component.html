@@ -1,7 +1,7 @@
 <div id="dimension-selectors" *ngIf="dimensions as selectors; else loading">
   <ng-template ngFor let-selector [ngForOf]="selectors">
   <label>{{selector.name}}</label>
-    <ul #dimension [id]="selector.name">
+    <ul #dimension [id]="selector.name" [ngClass]="{'fixed-height': selector.options.length > 6}">
       <ng-container *ngFor="let opt of selector.options; let i = index;">
         <ng-container *ngIf="!opt.children">
             <li [class.selected]="opt.selected" matTooltipClass="custom-tooltip" matTooltip="{{ opt.info ? opt.info : '' }}" (mousedown)="optSelectMouseEvent(opt, selector.name, selector.options, true)" (mouseup)="optSelectMouseEvent(opt, selector.name, selector.options, false)">
