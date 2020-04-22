@@ -1,6 +1,14 @@
 @import "abstracts/variables";
 
 #banner {
+  h1#data-warehouse-title {
+    color: $accent-text;
+    font-size: 1.7em;
+    text-align: center;
+    text-transform: uppercase;
+		margin-bottom: 0;
+  }
+
   p {
     color: #3B0B0B;
     font-weight: bold;
@@ -29,7 +37,7 @@
 #about-warehouse {
   h2 {
     color: #3B0B0B;
-    font-size: 1.3em;
+    font-size: 1.2em;
     padding: 0.5em 0 0.25em;
     text-transform: uppercase;
   }

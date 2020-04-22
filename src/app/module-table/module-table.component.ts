@@ -41,9 +41,12 @@ export class ModuleTableComponent implements OnInit, OnChanges {
     const fixedColumns = [...Object.keys(this.dimensions), 'units'];
     const fixedColumnsLength = fixedColumns.length; // include units column to module dimensions
     const sourceInfo = [
-      'Data source: Hawaii Tourism Authority',
-      'Data is updated monthly by Research & Economic Analysis Division, State of Hawaii Department of Business, Economic Development and Tourism.'
-    ]
+      'Data is updated monthly by the Research & Economic Analysis Division, State of Hawaii Department of Business, Economic Development and Tourism (DBEDT)',
+      'Source of Data: Hawaii Tourism Authority',
+      'Seasonally adjusted series are from DBEDT',
+      'Hotel performance data prior to March 2017 are from Hospitality Advisors, LLC.'
+    ];
+    const tableTitle = 'Hawaii Tourism Data (from DBEDT Data Warehouse)';
     this.tableWidget = moduleTable.DataTable({
       data: tableData.series,
       dom: 'Bt',
@@ -84,16 +87,22 @@ export class ModuleTableComponent implements OnInit, OnChanges {
           exportOptions: {
             columns: ':visible',
           },
+          title: tableTitle,
           customize: function (xlsx) {
             const sheet = xlsx.xl.worksheets['sheet1.xml'];
-            const sourceRow = tableData.series.length + 3;
+            $(`c[r="A1"]`, sheet).attr('s', '50');
+            const sourceRow = tableData.series.length + 4;
             const lastRow = $(sheet).find('row:last-child');
             lastRow.after(
               `<row r="${sourceRow}"><c t="inlineStr" r="A${sourceRow}"><is><t xml:space="preserve"></t></is></c></row>
-              <row r="${sourceRow + 2}"><c t="inlineStr" r="A${sourceRow + 2}"><is><t xml:space="preserve"></t></is></c></row>`
+              <row r="${sourceRow + 1}"><c t="inlineStr" r="A${sourceRow + 1}"><is><t xml:space="preserve"></t></is></c></row>
+              <row r="${sourceRow + 2}"><c t="inlineStr" r="A${sourceRow + 2}"><is><t xml:space="preserve"></t></is></c></row>
+              <row r="${sourceRow + 3}"><c t="inlineStr" r="A${sourceRow + 3}"><is><t xml:space="preserve"></t></is></c></row>`
             );
             $(`c[r=A${sourceRow}] t`, sheet).text(sourceInfo[0]);
-            $(`c[r=A${sourceRow + 2}] t`, sheet).text(sourceInfo[1]);
+            $(`c[r=A${sourceRow + 1}] t`, sheet).text(sourceInfo[1]);
+            $(`c[r=A${sourceRow + 2}] t`, sheet).text(sourceInfo[2]);
+            $(`c[r=A${sourceRow + 3}] t`, sheet).text(sourceInfo[3]);
           },
         }, {
           extend: 'csv',
@@ -102,27 +111,29 @@ export class ModuleTableComponent implements OnInit, OnChanges {
           exportOptions: {
             columns: ':visible'
           },
+          title: tableTitle,
           customize(csv) {
-            return csv + `\n${sourceInfo[0]}\n\n"${sourceInfo[1]}"`
+            return csv + `\n\n"${sourceInfo[0]}"\n"${sourceInfo[1]}"\n"${sourceInfo[2]}"\n"${sourceInfo[3]}"`
           }
         }, {
-          extend: 'pdf',
+          extend: 'pdfHtml5',
           orientation: 'landscape',
           className: 'btn btn-outline-secondary',
           text: '<span class="fas fa-file-pdf" aria-hidden="true" title="PDF"></span>',
           exportOptions: {
             columns: ':visible'
           },
+          title: tableTitle,
           customize(doc) {
-            // Table rows should be divisible by 12
-            // Maintain consistant table width (i.e. add empty strings if row has less than 12 data cells)
+            // Table rows should be divisible by 10
+            // Maintain consistant table width (i.e. add empty strings if row has less than 10 data cells)
             function rowRightPad(row) {
               const paddedRow = [];
               row.forEach((item) => {
                 paddedRow.push(item);
               });
-              const rowDiff = paddedRow.length % 12;
-              let addString = 12 - rowDiff;
+              const rowDiff = paddedRow.length % 10;
+              let addString = 10 - rowDiff;
               while (addString) {
                 paddedRow.push({ text: ' ', style: '' });
                 addString -= 1;
@@ -143,9 +154,11 @@ export class ModuleTableComponent implements OnInit, OnChanges {
             }
             function noWrap(array) {
               array.forEach((cell) => {
-                cell.noWrap = true;
+                cell.noWrap = false;
               });
             }
+            doc.styles.title.alignment = 'left';
+            doc.styles.title.fontSize = 13;
             // Get original table object
             const docContent = doc.content.find(c => c.hasOwnProperty('table'));
             const currentTable = docContent.table.body;
@@ -158,16 +171,15 @@ export class ModuleTableComponent implements OnInit, OnChanges {
               });
               // Get data from each original row excluding fixed columns and sources
               const nonFixedCols = row.slice(fixedColumnsLength, row.length);
-              // Split data into groups of arrays with max length == 11
-              const maxLength = fixedColumnsLength === 4 ? 8 : 9;
-              console.log(maxLength)
+              // Split data into groups of arrays with max length == 10
+              const maxLength = fixedColumnsLength === 4 ? 6 : 7;
               const split = splitTable(nonFixedCols, maxLength);
               for (let newRow of split) {
                 fixed.forEach((c) => {
                   const cCopy = Object.assign({}, c);
                   newRow.unshift(cCopy);
                 });
-                if (newRow.length < 12) {
+                if (newRow.length < 10) {
                   newRow = rowRightPad(newRow);
                 }
                 // Right align cell text
@@ -182,13 +194,15 @@ export class ModuleTableComponent implements OnInit, OnChanges {
                 }
               }
             });
+            console.log(doc)
             doc.defaultStyle.fontSize = 10;
             doc.styles.tableHeader.fontSize = 10;
             docContent.table.dontBreakRows = true;
             docContent.table.headerRows = 0;
             docContent.table.body = formattedTable;
+            doc.content[1].table.widths = [...new Array(10)].map(() => '10%');
             doc.content.push({
-              text: `${sourceInfo[0]}\n\n${sourceInfo[1]}`
+              text: `\n${sourceInfo[0]}\n${sourceInfo[1]}\n${sourceInfo[2]}\n${sourceInfo[3]}`
             });
           }
         }, {
@@ -198,6 +212,7 @@ export class ModuleTableComponent implements OnInit, OnChanges {
           exportOptions: {
             columns: ':visible'
           },
+          title: tableTitle,
           customize(win) {
             function sortObsDates(nonSorted, sorted) {
               const result = [];
@@ -209,7 +224,7 @@ export class ModuleTableComponent implements OnInit, OnChanges {
             }
             function splitTable(array, size) {
               const result = [];
-              for (let i = 0; i < array.length; i += size) {
+              for (let i = 1; i < array.length; i += size) {
                 result.push(array.slice(i, i + size));
               }
               return result;
@@ -223,14 +238,13 @@ export class ModuleTableComponent implements OnInit, OnChanges {
             // Get array of columns minus fixed columns
             const columns = tableColumns.slice(fixedColumnsLength);
             // Split columns into arrays with max length of 7 (total of 10 cells per row)
-            const maxLength = fixedColumnsLength === 4 ? 7 : 8;
+            const maxLength = fixedColumnsLength === 4 ? 6 : 7;
             const tableHeaders = splitTable(columns, maxLength);
             const newTables = [];
-
             // Add fixed columns to the new table headers and create a new table for each header
             tableHeaders.forEach((header) => {
-              // start index set to 1 to skip invisible ID column
-              for (let i = fixedColumnsLength - 1; i >= 1; i--) {
+              // skip invisible ID column
+              for (let i = fixedColumnsLength; i > 0; i--) {
                 header.unshift(tableColumns[i]);
               }
               let html = '<table class="dataTable no-footer"><tr>';
@@ -240,7 +254,6 @@ export class ModuleTableComponent implements OnInit, OnChanges {
               html += '</tr>';
               newTables.push(html);
             });
-
             // Add data from indicators to each new table
             tableData.series.forEach((ind, index) => {
               // start index set to 1 to skip invisible ID column
@@ -254,8 +267,8 @@ export class ModuleTableComponent implements OnInit, OnChanges {
                 fixedColumns.forEach((dim) => {
                   table += `<td>${ind[dim]}</td>`;
                 });
-                let colCount = fixedColumnsLength;
-                while (colCount < 10 && obsCounter < sortedObs.length) {
+                let colCount = fixedColumnsLength + 1;
+                while (colCount < 11 && obsCounter < sortedObs.length) {
                   table += '<td>' + ind.observations[sortedObs[obsCounter]] + '</td>';
                   colCount += 1;
                   obsCounter += 1;
@@ -289,7 +302,7 @@ export class ModuleTableComponent implements OnInit, OnChanges {
             });
             $(win.document.body)
               .find('table:last-child')
-              .after(`<p>${sourceInfo[0]}<br /><br />${sourceInfo[1]}</p>`);
+              .after(`<p>${sourceInfo[0]}<br />${sourceInfo[1]}<br />${sourceInfo[2]}<br />${sourceInfo[3]}</p>`);
           }
         }
       ]
