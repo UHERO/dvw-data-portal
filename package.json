@@ -6,7 +6,7 @@
     "start": "ng serve",
     "start-staging": "ng serve -c=staging --port=4200",
     "build": "ng build --prod --base-href=/dvw/",
-    "build-staging": "ng build -c=staging --output-path=dist_staging",
+    "build-staging": "ng build -c=staging --base-href=/dvw/ --output-path=dist_staging",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
