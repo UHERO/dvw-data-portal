@@ -194,7 +194,6 @@ export class ModuleTableComponent implements OnInit, OnChanges {
                 }
               }
             });
-            console.log(doc)
             doc.defaultStyle.fontSize = 10;
             doc.styles.tableHeader.fontSize = 10;
             docContent.table.dontBreakRows = true;

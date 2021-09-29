@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { QuarterSelectorComponent } from './quarter-selector.component';
 
@@ -6,7 +6,7 @@ describe('QuarterSelectorComponent', () => {
   let component: QuarterSelectorComponent;
   let fixture: ComponentFixture<QuarterSelectorComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ QuarterSelectorComponent ]
     })
