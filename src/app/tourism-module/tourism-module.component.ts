@@ -68,6 +68,7 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
     this.displayTable = false;
     this.datesSelected = null;
     this.selectedFrequency = null;
+    this.invalidDates = null;
     this.noData = true;
     this.noSeriesAvailable = false;
     this.tableData = [];
@@ -278,18 +279,22 @@ export class TourismModuleComponent implements OnInit, OnDestroy {
   }
 
   checkValidDates = (dates: DatesSelected) => {
-    let valid = true;
-    if (dates.selectedStartYear > dates.selectedEndYear) {
-      valid = false;
+    const {
+      selectedStartYear,
+      selectedEndYear,
+      selectedStartQuarter,
+      selectedEndQuarter,
+      selectedStartMonth,
+      selectedEndMonth
+    } = dates;
+    if (selectedStartYear > selectedEndYear) {
+      return false;
     }
-    if (dates.selectedStartYear === dates.selectedEndYear) {
-      if (dates.selectedStartQuarter > dates.selectedEndQuarter) {
-        valid = false;
-      }
-      if (dates.selectedStartMonth > dates.selectedEndMonth) {
-        valid = false;
+    if (selectedStartYear === selectedEndYear) {
+      if ((selectedStartQuarter > selectedEndQuarter) || (selectedStartMonth > selectedEndMonth)) {
+        return false;
       }
     }
-    return valid;
+    return true;
   }
 }
