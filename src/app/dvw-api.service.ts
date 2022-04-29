@@ -22,7 +22,7 @@ export class DvwApiService {
   mapFrequencies = (response) => {
     const freqs = response.data;
     const freqArray = [];
-    freqs.forEach((f) => {
+    freqs?.forEach((f) => {
       if (f === 'A') {
         freqArray.push({ value: 'A', label: 'Annual' });
       }

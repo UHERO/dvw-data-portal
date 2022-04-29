@@ -1,5 +1,5 @@
 // Custom Angular Material theme
-@use '~@angular/material' as mat;
+@use '@angular/material' as mat;
 @import '../../node_modules/@angular/material/theming';
 @include mat.core();
 
