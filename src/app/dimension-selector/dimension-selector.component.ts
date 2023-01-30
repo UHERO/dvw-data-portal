@@ -43,7 +43,7 @@ export class DimensionSelectorComponent implements OnInit, AfterViewInit, OnDest
   ngAfterViewInit() {
     const dimSubscription = this.selects.changes.subscribe(() => {
       this.selects.toArray().forEach((el, index) => {
-        this.selectedOptions[el.nativeElement.id] = new Array();
+        this.selectedOptions[el.nativeElement.id] = [];
         if (index === this.selects.toArray().length - 1) {
           dimSubscription.unsubscribe();
         }

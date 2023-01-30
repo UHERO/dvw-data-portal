@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { forkJoin as observableForkJoin, of as observableOf, Observable } from 'rxjs';
-import { tap, map, mergeMap, switchMap, flatMap } from 'rxjs/operators';
+import { tap, map, mergeMap } from 'rxjs/operators';
 import { HelperService } from './helper.service';
 const API_URL = environment.apiUrl;
 
@@ -84,7 +84,7 @@ export class DvwApiService {
       const selectors = [];
       let moduleDimensionOptions$ = this.http.get(`${API_URL}/dimensions/${mod}`).pipe(
         map(response => this.mapDimensionOrder(response, mod)),
-        flatMap((dimensions) =>
+        mergeMap((dimensions) =>
           observableForkJoin(dimensions.map(d => this.http.get(`${API_URL}/${d}/all/${mod}`).pipe(
             map((res: any) => {
               const mappedResponse = mapDimensionOptions(res);

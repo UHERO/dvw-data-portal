@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, Input } from '@angular/core';
+import { Component, OnChanges, Input } from '@angular/core';
 
 import * as $ from 'jquery';
 import 'datatables.net';
@@ -14,16 +14,12 @@ import { Subject } from 'rxjs';
   templateUrl: './module-table.component.html',
   styleUrls: ['./module-table.component.scss']
 })
-export class ModuleTableComponent implements OnInit, OnChanges {
+export class ModuleTableComponent implements OnChanges {
   @Input() dimensions: any;
   @Input() tableData: any;
   @Input() tableColumns: any;
   @Input() dateArray: Array<any>;
   private tableWidget: any;
-
-  constructor() { }
-
-  ngOnInit() { }
 
   ngOnChanges() {
     if (this.tableColumns && this.tableData) {
@@ -56,7 +52,7 @@ export class ModuleTableComponent implements OnInit, OnChanges {
         { 'visible': false, 'targets': 0 },
         {
           className: 'td-left',
-          targets: Array.apply(null, { length: fixedColumnsLength }).map(Number.call, Number)
+          targets: [...Array(fixedColumnsLength)].map(Number.call, Number) //Array.apply(null, { length: fixedColumnsLength }).map(Number.call, Number)
         },
         {
           className: 'td-right',
@@ -160,7 +156,7 @@ export class ModuleTableComponent implements OnInit, OnChanges {
             doc.styles.title.alignment = 'left';
             doc.styles.title.fontSize = 13;
             // Get original table object
-            const docContent = doc.content.find(c => c.hasOwnProperty('table'));
+            const docContent = doc.content.find(c => Object.prototype.hasOwnProperty.call(c, 'table'));
             const currentTable = docContent.table.body;
             const formattedTable: Array<any> = [];
             currentTable.forEach((row, index) => {

@@ -152,8 +152,23 @@
               "devServerTarget": "dbedt-tourism:serve:production"
             }
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
+            ]
+          }
         }
       }
-    }},
-  "defaultProject": "dbedt-tourism"
+    }
+  },
+  "cli": {
+    "schematicCollections": [
+      "@angular-eslint/schematics",
+      "@angular-eslint/schematics"
+    ]
+  }
 }

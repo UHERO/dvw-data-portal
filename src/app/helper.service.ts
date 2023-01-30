@@ -5,8 +5,6 @@ import { Injectable } from '@angular/core';
 })
 export class HelperService {
 
-  constructor() { }
-
   dimensions = [
     { key: 'indicators', tableName: 'Indicator' },
     { key: 'markets', tableName: 'Market' },
