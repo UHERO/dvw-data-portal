@@ -1,6 +1,6 @@
 // @import '@angular/material/prebuilt-themes/deeppurple-amber.css';
 // @import '~material-design-icons/iconfont/material-icons.css';
-// @import './layout/theme';
+@import './layout/theme';
 @import './abstracts/variables';
 @import 'bootstrap/scss/functions';
 $enable-negative-margins: true;
@@ -23,11 +23,12 @@ $enable-negative-margins: true;
     font-size: 1.5em;
 }
 
+/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
 .mat-form-field-label {
     text-transform: capitalize;
 }
 
-.mat-progress-spinner circle, .mat-spinner circle {
+.mat-mdc-progress-spinner circle, .mat-mdc-progress-spinner circle {
     stroke: $link-color;
 }
 
@@ -39,8 +40,8 @@ $enable-negative-margins: true;
     color: $link-color;
 }
 
-.mat-optgroup {
-    .mat-optgroup-label {
+.mat-mdc-optgroup {
+    .mat-mdc-optgroup-label {
         color: $link-color;
     }
 }
