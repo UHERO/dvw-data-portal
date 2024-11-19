@@ -1,43 +1,14 @@
-@import "abstracts/variables";
-
 #banner {
   h1#data-warehouse-title {
-    color: $accent-text;
-    font-size: 1.7em;
-    text-align: center;
-    text-transform: uppercase;
-		margin-bottom: 0;
+    color: var(--accent-text);
   }
 
   p {
-    color: #3B0B0B;
     font-weight: bold;
     margin-bottom: 1.3em;
-    text-align: center;
   }
 }
 
-.module-list{
-  .card {
-    border: 1px solid $link-color;
-    border-radius: 0;
-    line-height: 1;
-    max-height: 120px;
-
-    .module-name {
-      font-weight: bold;
-    }
-
-    .module-description {
-      font-size: 0.85em;
-    }
-  }
-}
-
-#about-warehouse {
-  h2 {
-    color: #3B0B0B;
-    font-size: 1.2em;
-    text-transform: uppercase;
-  }
+.container {
+  max-width: 800px;
 }

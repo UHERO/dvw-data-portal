@@ -1,6 +1,11 @@
-<form class="date-selector form-group mr-1">
-  <label>Quarter</label>
-  <select class="form-control form-control-sm" [(ngModel)]="selectedQuarter" name="quarter" (change)="changeQuarter($event.target.value)">
+<div class="selector-container quarter-selector">
+  <label for="quarter-select">Quarter</label>
+  <select 
+    id="quarter-select"
+    class="form-select" 
+    [(ngModel)]="selectedQuarter" 
+    name="quarter" 
+    (change)="changeQuarter($event.target.value)">
     <option *ngFor="let q of quarters" [value]="q">{{q}}</option>
   </select>
-</form>
+</div>

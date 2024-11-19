@@ -23,6 +23,10 @@ $enable-negative-margins: true;
     font-size: 1.5em;
 }
 
+:root {
+    --accent-text: rgb(34, 118, 124);
+}
+
 /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
 .mat-form-field-label {
     text-transform: capitalize;

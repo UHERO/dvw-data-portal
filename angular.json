@@ -69,7 +69,7 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
+                  "maximumWarning": "4mb",
                   "maximumError": "5mb"
                 },
                 {
@@ -95,7 +95,7 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
+                  "maximumWarning": "4mb",
                   "maximumError": "5mb"
                 },
                 {
@@ -169,6 +169,7 @@
     "schematicCollections": [
       "@angular-eslint/schematics",
       "@angular-eslint/schematics"
-    ]
+    ],
+    "analytics": "30ec4576-4e66-4d40-a619-fd62e2a248e5"
   }
 }

@@ -1,0 +1,36 @@
+// src/app/features/module-list/components/module-list-item/module-list-item.component.scss
+:host {
+    display: block;
+  }
+  
+  .card {
+    border: none;
+    overflow: hidden;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  }
+  
+  .hover-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+  }
+  
+  .icon-column {
+    background-color: var(--accent-text);
+  }
+  
+  .icon-wrapper {
+    .material-icons {
+      color: white;
+    }
+  }
+  
+  .card-title {
+    color: var(--accent-text);
+    font-weight: 600;
+  }
+  
+  .card-text {
+    font-size: 14.4px;
+    font-family: 'Open Sans', sans-serif;
+    color: #333;
+  }
