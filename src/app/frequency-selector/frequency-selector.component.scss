@@ -8,7 +8,7 @@
     color: var(--accent-text);
     margin-bottom: 0.5rem;
   }
-  
+
   .selector-list {
     background: #fff;
     border: 1px solid #e2e8f0;
@@ -17,11 +17,11 @@
     width: 100%;
     padding: 0.25rem 0;
     margin: 0;
-    height: 120px;
+    min-height: 97px;
     overflow-y: auto;
     user-select: none;
     transition: border-color 0.15s ease-in-out;
-    
+
     &:hover:not(.disabled) {
       border-color: var(--accent-text);
     }
@@ -49,7 +49,7 @@
     &::-webkit-scrollbar-thumb {
       background: #cdcdcd;
       border-radius: 3px;
-      
+
       &:hover {
         background: #a6a6a6;
       }
@@ -58,13 +58,15 @@
 }
 
 .list-item {
-  padding: 0.5rem 1rem;
+  padding: 0.25rem 1rem;
   font-size: 0.875rem;
   cursor: pointer;
   transition: all 0.2s ease;
-  
+
   &:hover:not(.disabled) {
-    background-color: rgba(var(--accent-text-rgb), 0.1);
+    background-color: var(--accent-text);
+    opacity: .8;
+    color: black;
   }
 
   &.selected {

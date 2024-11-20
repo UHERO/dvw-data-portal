@@ -32,7 +32,8 @@ $enable-negative-margins: true;
     text-transform: capitalize;
 }
 
-.mat-mdc-progress-spinner circle, .mat-mdc-progress-spinner circle {
+.mat-mdc-progress-spinner circle,
+.mat-mdc-progress-spinner circle {
     stroke: $link-color;
 }
 
@@ -50,23 +51,10 @@ $enable-negative-margins: true;
     }
 }
 
-.date-selector {
-    display: inline-block;
+.main-content {
+    max-width: 720px;
+}
 
-    label {
-        display: block;
-        font-size: 0.9em;
-        text-align: center;
-    }
-    
-    select {
-        background: #FFF;
-        border: 1px solid $light-gray;
-        border-radius: 0;
-        font-size: 0.8em;
-        height: 2rem;
-        line-height: 1.5;
-        min-width: 75px;
-        padding: 0rem 1.75rem 0rem .75rem;
-    }
+.font-sm {
+    font-size: 14px;
 }
