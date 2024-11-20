@@ -3,9 +3,28 @@
 .dimension-selectors {
     padding: 0.25rem;
 
+    // Add flex container styling for smaller screens
+    @media (max-width: 800px) {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
     .selector-group {
         &+.selector-group {
             margin-top: 1.5rem;
+
+            // Remove top margin when in flex row layout
+            @media (max-width: 800px) {
+                margin-top: 0;
+            }
+        }
+
+        // Add flex item styling for smaller screens
+        @media (max-width: 800px) {
+            flex: 1 1 300px; // Grow, shrink, and base width
+            min-width: 250px; // Minimum width before wrapping
+            margin: 0; // Remove default margins
         }
 
         .selector-label {
@@ -101,11 +120,11 @@
                 }
 
                 &.expanded::before {
-                    content: '\f078'; // fa-chevron-down
+                    content: '\f078';
                 }
 
                 &.collapsed::before {
-                    content: '\f054'; // fa-chevron-right
+                    content: '\f054';
                 }
             }
         }

@@ -18,6 +18,20 @@ $enable-negative-margins: true;
 @import "bootstrap/scss/utilities/api";
 @import './base/reset';
 
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+}
+
+app-root {
+    display: block;
+    height: 100%;
+}
+
 .loading {
     color: $link-color;
     font-size: 1.5em;
