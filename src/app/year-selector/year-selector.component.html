@@ -1,6 +1,11 @@
-<form class="date-selector form-group mr-1">
-  <label>{{rangeLabel}}</label>
-  <select class="form-control form-control-sm" [(ngModel)]="selectedYear" [name]="rangeLabel" (change)="changeYear($event.target.value)">
+<div class="selector-container year-selector">
+  <label [for]="'year-select-' + rangeLabel">{{rangeLabel}} Year</label>
+  <select 
+    [id]="'year-select-' + rangeLabel"
+    class="form-select" 
+    [(ngModel)]="selectedYear" 
+    [name]="rangeLabel" 
+    (change)="changeYear($event.target.value)">
     <option *ngFor="let year of dates" [value]="year">{{year}}</option>
   </select>
-</form>
+</div>

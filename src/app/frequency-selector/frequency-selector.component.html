@@ -1,6 +1,12 @@
-<form id="frequency-form" class="mr-1">
-  <label>Frequency</label>
-    <select [disabled]="invalidDates" size="3" name="frequency" [(ngModel)]="selectedValue" (change)="changeFrequency($event.target.value)">
-      <option *ngFor="let frequency of freqs" [value]="frequency.value">{{frequency.label}}</option>
-    </select>
-</form>
+<div class="selector-group frequency-selector">
+  <label class="selector-label" for="frequency-select">Frequency</label>
+  <ul class="selector-list" [class.disabled]="invalidDates">
+    <li class="list-item"
+        *ngFor="let frequency of freqs"
+        [class.selected]="isSelected(frequency.value)"
+        (click)="changeFrequency(frequency.value)">
+      {{frequency.label}}
+    </li>
+  </ul>
+  <small class="error-text" *ngIf="invalidDates">{{invalidDates}}</small>
+</div>

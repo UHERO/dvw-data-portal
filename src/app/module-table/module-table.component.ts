@@ -1,18 +1,18 @@
-import { Component, OnChanges, Input } from '@angular/core';
+import { Component, Input, OnChanges, ViewEncapsulation } from '@angular/core';
 
-import * as $ from 'jquery';
 import 'datatables.net';
-import 'datatables.net-fixedcolumns';
-import 'datatables.net-buttons/js/dataTables.buttons.js';
-import 'datatables.net-buttons/js/buttons.html5.js';
 import 'datatables.net-buttons/js/buttons.flash.js';
+import 'datatables.net-buttons/js/buttons.html5.js';
 import 'datatables.net-buttons/js/buttons.print.js';
-import { Subject } from 'rxjs';
+import 'datatables.net-buttons/js/dataTables.buttons.js';
+import 'datatables.net-fixedcolumns';
+import * as $ from 'jquery';
 
 @Component({
   selector: 'app-module-table',
   templateUrl: './module-table.component.html',
-  styleUrls: ['./module-table.component.scss']
+  styleUrls: ['./module-table.component.scss'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class ModuleTableComponent implements OnChanges {
   @Input() dimensions: any;
@@ -61,13 +61,17 @@ export class ModuleTableComponent implements OnChanges {
             // If no data is available for a given year, return an empty string
             return data === undefined ? ' ' : data;
           }
+        },
+        {
+          className: 'px-2 py-1 text-nowrap font-sm',
+          targets: '_all',
         }
       ],
       fixedColumns: {
         // Fixed columns prevents emptyTable language from being displayed
         leftColumns: !tableData.series ? '' : fixedColumnsLength
       },
-      scrollY: '400px',
+      // scrollY: '464px',
       scrollX: true,
       paging: false,
       searching: false,

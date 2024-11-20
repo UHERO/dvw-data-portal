@@ -1,0 +1,137 @@
+
+<div class="container-fluid bg-light min-vh-100 py-5">
+    <div class="container">
+      <!-- Header Section -->
+      <div id="banner" class="text-center mb-5">
+        <h1 class="display-4 fw-bold mb-3" id="data-warehouse-title">Tourism Data Warehouse</h1>
+        <p class="lead text-secondary">Browse data by the following categories</p>
+      </div>
+  
+      <!-- Top Row Cards -->
+      <div class="row g-4 justify-content-center mb-4">
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="card h-100 border-0 shadow-sm hover-card">
+            <div class="card-body text-center py-4 px-2">
+              <div class="icon-circle mb-3 mx-auto">
+                <span class="material-icons" style="font-size: 2rem;">trending_up</span>
+              </div>
+              <h4 class="h5 mb-2">Visitor Trends</h4>
+              <p class="text-muted small mb-0">
+                <a class="stretched-link text-decoration-none" [routerLink]="['/module/trend']">
+                  Arrivals, Days, EXPND, LOS, PPPD, PPPT
+                </a>
+              </p>
+            </div>
+          </div>
+        </div>
+  
+  
+          <div class="col-12 col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm hover-card">
+              <div class="card-body text-center py-4 px-2">
+                <div class="icon-circle mb-3 mx-auto">
+                  <span class="material-icons" style="font-size: 2rem;">people</span>
+              </div>
+              <h4 class="h5 mb-2">Visitor Characteristics</h4>
+              <p class="text-muted small mb-0">
+                <a class="stretched-link text-decoration-none" [routerLink]="['/module/char']">
+                  Profile and analyze visitor demographics
+                </a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Bottom Row Cards -->
+      <div class="row g-4 justify-content-center mb-4">
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="card h-100 border-0 shadow-sm hover-card">
+            <div class="card-body text-center py-4 px-2">
+              <div class="icon-circle mb-3 mx-auto">
+                <span class="material-icons" style="font-size: 2rem;">flight</span>
+              </div>
+              <h4 class="h5 mb-2">Air Seats</h4>
+              <p class="text-muted small mb-0">
+                <a class="stretched-link text-decoration-none" [routerLink]="['/module/airseat']">
+                  Track air seats to Hawaii
+                </a>
+              </p>
+            </div>
+          </div>
+        </div>
+  
+  
+          <div class="col-12 col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm hover-card">
+              <div class="card-body text-center py-4 px-2">
+                <div class="icon-circle mb-3 mx-auto">
+                  <span class="material-icons" style="font-size: 2rem;">attach_money</span>
+              </div>
+              <h4 class="h5 mb-2">Expenditure Patterns</h4>
+              <p class="text-muted small mb-0">
+                <a class="stretched-link text-decoration-none" [routerLink]="['/module/exp']">
+                  Analyze visitor spending patterns
+                </a>
+              </p>
+            </div>
+          </div>
+        </div>
+  
+   
+          <div class="col-12 col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm hover-card">
+              <div class="card-body text-center py-4 px-2">
+                <div class="icon-circle mb-3 mx-auto">
+                  <span class="material-icons" style="font-size: 2rem;">location_city</span>
+              </div>
+              <h4 class="h5 mb-2">Hotel Performance</h4>
+              <p class="text-muted small mb-0">
+                <a class="stretched-link text-decoration-none" [routerLink]="['/module/hotel']">
+                  Monitor hotel metrics and performance
+                </a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <!-- About Section -->
+      <div class="row mt-5" id="about-warehouse">
+        <div class="col-12">
+          <h2 class="h3 mb-4">About Tourism Data Warehouse</h2>
+          <div class="bg-white rounded-3 shadow-sm p-4">
+            <p class="lead mb-4">The Tourism Data Warehouse lets you customize and download datasets about Hawaii's tourism industry, with many of them updated monthly.</p>
+            <div class="text-muted">
+              <p><strong>Visitor Trends:</strong> this section provides data on the number of visitors, days, expenditure, length of stay, daily census, and per person per day spending by market and by island for monthly, quarterly, and annually. Data availability varies by indicator, market and island.</p>
+              <p><strong>Visitor Characteristics:</strong> section gives a basic profile of Hawaii's visitors. The profile is available by group defined by where they came from, which island they visited, accommodation choice, purpose and type of their visit, and if they've visited Hawaii before.</p>
+              <p><strong>Air Seats to Hawaii:</strong> this section shows the count of air seats to Hawaii's commercial airports on Oahu, Hawaii Island, Maui, and Kauai. Data are available for monthly, quarterly, and annually for scheduled flights and charter flights by departing region or country.</p>
+              <p><strong>Expenditure Patterns:</strong> this section includes data on spending habits of visitors, either by market or by island visited. Spending for food, entertainment, transportation, shopping, and lodging are shown as daily spending and as a percent of total spending.</p>
+              <p><strong>Hotel Performance:</strong> this section tracks hotel occupancy, the average daily rate, and revenue per available room. Where available, data can be viewed by island area or hotel type.</p>
+              <p class="mb-0">We invite your input on this tool. Please email your feedback to <a href="mailto:dbedt.research@hawaii.gov">dbedt.research@hawaii.gov</a> or call (808) 586-2473.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- <style>
+  .icon-circle {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .hover-card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  }
+  
+  .hover-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+  }
+  </style> -->
