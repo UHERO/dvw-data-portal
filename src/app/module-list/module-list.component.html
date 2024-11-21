@@ -1,35 +1,72 @@
-
-<div class="container-fluid bg-light min-vh-100 py-5">
-  <div class="container">
-    <!-- Header Section -->
-    <div id="banner" class="text-center mb-5">
-      <h1 class="display-4 fw-bold mb-3" id="data-warehouse-title">Tourism Data Warehouse</h1>
-      <p class="lead text-secondary">The Tourism Data Warehouse lets you customize and download datasets about Hawaii’s tourism industry, with many of them updated monthly. Browse data by the following categories</p>
+<!-- Current -->
+<div class="container-fluid">
+  <div id="banner">
+    <h1 id="data-warehouse-title">Tourism Data Warehouse</h1>
+    <p>Browse data by the following categories</p>
+  </div>
+  <div class="module-list row justify-content-center">
+    <!-- <div class="col col-12 col-sm-3">
+    </div> -->
+    <div class="col col-12 col-sm-4 mb-4">
+      <div class="card text-center">
+        <div class="card-body pl-0 pr-0">
+          <h1 class="card-title mb-0"><span class="material-icons module-icon">trending_up</span></h1>
+          <p class="card-text"><a class="stretched-link" title="Visitor Trends (Arrivals/Days/Expenditures)"
+              [routerLink]="['/module/trend']"><span class="module-name">Visitor Trends</span><span
+                class="module-description">(Arrivals, Days,
+                EXPND, LOS, PPPD, PPPT)</span></a></p>
+        </div>
+      </div>
     </div>
-
-    <!-- Module List -->
-    <div class="row g-4">
-      <div class="col-12" *ngFor="let module of modules">
-        <app-module-list-item
-          [icon]="module.icon"
-          [title]="module.title"
-          [description]="module.description"
-          [routePath]="module.routePath">
-        </app-module-list-item>
+    <div class="col col-12 col-sm-4 mb-4">
+      <div class="card text-center pl-0 pr-0">
+        <div class="card-body">
+          <h1 class="card-title mb-0"><span class="material-icons module-icon">people</span></h1>
+          <p class="card-text"><a class="stretched-link" title="Visitor Characteristics"
+              [routerLink]="['/module/char']"><span class="module-name">Visitor<br />Characteristics</span></a></p>
+        </div>
       </div>
     </div>
   </div>
+  <div class="module-list row justify-content-center">
+    <!-- <div class="col col-12 col-sm-3">
+    </div> -->
+    <div class="col col-12 col-sm-4 mb-4">
+      <div class="card text-center">
+        <div class="card-body">
+          <h1 class="card-title mb-0"><span class="material-icons module-icon">flight</span></h1>
+          <p class="card-text"><a class="stretched-link" title="Air Seats to Hawaii"
+              [routerLink]="['/module/airseat']"><span class="module-name">Air Seats<br />to Hawaii</span></a></p>
+        </div>
+      </div>
+    </div>
+    <div class="col col-12 col-sm-4 mb-4">
+      <div class="card text-center">
+        <div class="card-body">
+          <h1 class="card-title mb-0"><span class="material-icons module-icon">attach_money</span></h1>
+          <p class="card-text"><a class="stretched-link" title="Expenditure Patterns"
+              [routerLink]="['/module/exp']"><span class="module-name">Expenditure<br />Patterns</span></a></p>
+        </div>
+      </div>
+    </div>
+    <div class="col col-12 col-sm-4 mb-4">
+      <div class="card text-center">
+        <div class="card-body">
+          <h1 class="card-title mb-0"><span class="material-icons module-icon">location_city</span></h1>
+          <p class="card-text"><a class="stretched-link" title="Hotel Performance"
+              [routerLink]="['/module/hotel']"><span class="module-name">Hotel<br />Performance</span></a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row row-cols-1" id="about-warehouse">
+    <h2>About Tourism Data Warehouse</h2>
+    <p>The Tourism Data Warehouse lets you customize and download datasets about Hawaii’s tourism industry, with many of them updated monthly.</p>
+    <p><strong>Visitor Trends:</strong> this section provides data on the number of visitors, days, expenditure, length of stay, daily census, and per person per day spending by market and by island for monthly, quarterly, and annually.  Data availability varies by indicator, market and island.</p>
+    <p><strong>Visitor Characteristics:</strong> section gives a basic profile of Hawaii’s visitors.  The profile is available by group defined by where they came from, which island they visited, accommodation choice, purpose and type of their visit, and if they’ve visited Hawaii before.  The dataset allows data users to compare the profile of a certain group of visitors with other groups of visitors.</p>
+    <p><strong>Air Seats to Hawaii:</strong> this section shows the count of air seats to Hawaii’s commercial airports on Oahu, Hawaii Island, Maui, and Kauai.  Data are available for monthly, quarterly, and annually for scheduled flights and charter flights by departing region or country.</p>
+    <p><strong>Expenditure Patterns:</strong> this section includes data on spending habits of visitors, either by market or by island visited.  Spending for food, entertainment, transportation, shopping, and lodging are shown as daily spending and as a percent of total spending.</p>
+    <p><strong>Hotel Performance:</strong> this section tracks hotel occupancy, the average daily rate, and revenue per available room.  Where available, data can be viewed by island area or hotel type.</p>
+    <p>We invite your input on this tool.  Please email your feedback to <a href="mailto:dbedt.research@hawaii.gov">dbedt.research&#64;hawaii.gov</a> or call (808) 586-2473.</p>
+  </div>
 </div>
-
-<style>
-  #banner {
-  h1#data-warehouse-title {
-    color: var(--accent-text);
-  }
-
-  p {
-    font-weight: bold;
-    margin-bottom: 1.3em;
-  }
-}
-</style>

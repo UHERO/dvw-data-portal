@@ -1,16 +1,7 @@
-<div class="card hover-card mb-4">
-    <div class="row g-0">
-      <div class="col-3 icon-column">
-        <div class="icon-wrapper d-flex align-items-center justify-content-center h-100">
-          <span class="material-icons" style="font-size: 3rem;">{{icon}}</span>
-        </div>
-      </div>
-      <div class="col-9">
-        <div class="card-body py-3">
-          <h4 class="card-title h5 mb-2">{{title}}</h4>
-          <p class="card-text text-muted">{{description}}</p>
-          <a [routerLink]="['/module', routePath]" class="stretched-link"></a>
-        </div>
-      </div>
-    </div>
-  </div>
+<div class="module-button">
+  <button class="btn btn-module" [routerLink]="['/module', routePath]">
+    <span class="material-icons module-icon">{{icon}}</span>
+    <span class="module-name">{{title}}</span>
+    <span class="module-description" *ngIf="description">{{description}}</span>
+  </button>
+</div>

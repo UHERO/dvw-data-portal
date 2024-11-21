@@ -2,6 +2,7 @@
 
 # compiled output
 /dist
+/dist_staging
 /tmp
 /out-tsc
 # Only exists if Bazel was run

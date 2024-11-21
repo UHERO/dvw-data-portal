@@ -1,14 +1,142 @@
+.container-fluid {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
 #banner {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding: 2rem 1rem;
+  background: linear-gradient(to right, rgba(var(--accent-text-rgb), 0.05), rgba(var(--accent-text-rgb), 0.1));
+  border-radius: 8px;
+
   h1#data-warehouse-title {
     color: var(--accent-text);
+    font-size: 2rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 1rem;
   }
 
   p {
-    font-weight: bold;
-    margin-bottom: 1.3em;
+    font-weight: 600;
+    color: #4a5568;
+    font-size: 1.1rem;
+    margin-bottom: 0;
   }
 }
 
-.container {
+.module-list {
+  margin-bottom: 3rem;
+
+  .card {
+    height: 100%;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    transition: all 0.2s ease-in-out;
+    background: white;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      border-color: var(--accent-text);
+    }
+
+    .card-body {
+      padding: 1.5rem;
+    }
+
+    .card-title {
+      margin-bottom: 1rem;
+
+      .module-icon {
+        font-size: 2.5rem;
+        color: var(--accent-text);
+      }
+    }
+
+    .card-text {
+      margin: 0;
+
+      a {
+        text-decoration: none;
+        color: inherit;
+
+        .module-name {
+          display: block;
+          font-weight: 600;
+          font-size: 1.1rem;
+          color: #2d3748;
+          // margin-bottom: 0.25rem;
+        }
+
+        .module-description {
+          display: block;
+          font-size: 0.875rem;
+          color: #718096;
+        }
+      }
+    }
+  }
+}
+
+#about-warehouse {
   max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 8px;
+
+  h2 {
+    color: var(--accent-text);
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  p {
+    color: #4a5568;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+
+    strong {
+      color: #2d3748;
+    }
+
+    a {
+      color: var(--accent-text);
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .container-fluid {
+    padding: 1rem;
+  }
+
+  #banner {
+    padding: 1.5rem 1rem;
+    margin-bottom: 2rem;
+
+    h1#data-warehouse-title {
+      font-size: 1.75rem;
+    }
+  }
+
+  .module-list .card {
+    margin-bottom: 1rem;
+  }
+
+  #about-warehouse {
+    padding: 1.5rem;
+  }
 }
