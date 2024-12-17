@@ -13,6 +13,7 @@
               [class.selected]="opt.selected"
               [matTooltip]="opt.info || ''"
               matTooltipClass="custom-tooltip"
+              matTooltipPosition="right"
               (mousedown)="optSelectMouseEvent(opt, selector.name, selector.options, true)"
               (mouseup)="optSelectMouseEvent(opt, selector.name, selector.options, false)">
             {{opt.nameW}}
@@ -25,7 +26,8 @@
               [class.expanded]="opt.active"
               [class.collapsed]="!opt.active"
               (click)="toggle($event, opt)"
-              [matTooltip]="opt.info || ''">
+              [matTooltip]="opt.info || ''"
+              matTooltipPosition="right">
             {{opt.nameW}}
           </li>
           
@@ -36,6 +38,7 @@
                 [class.selected]="child.selected"
                 [matTooltip]="child.info || ''"
                 matTooltipClass="custom-tooltip"
+                matTooltipPosition="right"
                 (mousedown)="optSelectMouseEvent(child, selector.name, opt.children, true)"
                 (mouseup)="optSelectMouseEvent(child, selector.name, opt.children, false)">
               {{child.nameW}}
