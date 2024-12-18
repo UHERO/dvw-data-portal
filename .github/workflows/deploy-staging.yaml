@@ -27,8 +27,7 @@ jobs:
       - name: Prepare build folder
         run: |
           mkdir build
-          mkdir build/dvw
-          cp -r dist_staging/* build/dvw/
+          cp -r dist_staging/* build/
       
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
@@ -57,7 +56,7 @@ jobs:
         run: |
           echo "$SSH_KEY" > ssh_key
           chmod 700 ssh_key
-          scp -i ssh_key -o StrictHostKeyChecking=no -r * $SERVER_USER@$SERVER_HOST:dvw-data-portal-build
+          scp -i ssh_key -o StrictHostKeyChecking=no -r * $SERVER_USER@$SERVER_HOST:dvw-data-portal-build/dvw
           rm ssh_key
 
       # - name: Set up SSH
