@@ -55,24 +55,25 @@ jobs:
           echo "$SSH_KEY" > ssh_key
           chmod 700 ssh_key
           scp -i ssh_key -o StrictHostKeyChecking=no -r * $SERVER_USER@$SERVER_HOST:dvw-data-portal-build/dvw
-          rm ssh_key
+          rm -r ./*
 
-      # - name: Set up SSH
-      #   uses: webfactory/ssh-agent@v0.9.0
-      #   with:
-      #     ssh-private-key: ${{ secrets.STAGING_SSH_PRIVATE_KEY }}
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.STAGING_SSH_PRIVATE_KEY }}
 
-      # - name: SSH into instance and copy build to data-portal-dist
-      #   env:
-      #     SSH_HOST: ${{ secrets.STAGING_SSH_HOST }}
-      #     SSH_USER: ${{ secrets.STAGING_SSH_USER }}
-      #   run: |
-      #     ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST << 'EOF'
-      #       rm dvw-data-portal-build/ssh_key && \
-      #       sudo -u uhero rm ../uhero/data-portal-backup/data-portal-dist.zip && \
-      #       sudo -u uhero zip -r ../uhero/data-portal-backup/data-portal-dist.zip ../uhero/data-portal-dist && \
-      #       echo "Backup successful, moving onto deployment."
-      #       sudo -u uhero cp -r data-portal-build/* ../uhero/data-portal-dist/ && \
-      #       echo "Deployment complete"
-      #     EOF
+      - name: SSH into instance and copy build to data-portal-dist
+        env:
+          SSH_HOST: ${{ secrets.STAGING_SSH_HOST }}
+          SSH_USER: ${{ secrets.STAGING_SSH_USER }}
+        run: |
+          ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST << 'EOF'
+            rm dvw-data-portal-build/dvw/ssh_key && \
+            sudo -u uhero rm ../uhero/data-portal-backup/data-portal-dist.zip && \
+            sudo -u uhero zip -r ../uhero/data-portal-backup/data-portal-dist.zip ../uhero/data-portal-dist && \
+            echo "Backup successful, moving onto deployment."
+            sudo -u uhero cp -r dvw-data-portal-build/dvw ../uhero/data-portal-dist/ && \
+            sudo -u uhero cp -r ../uhero/data-portal-dist/dvw/assets/* ../uhero/data-portal-dist/assets
+            echo "Deployment complete"
+          EOF
       
