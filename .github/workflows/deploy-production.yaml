@@ -33,7 +33,7 @@ jobs:
           name: build-artifact
           path: dist/dbedt-tourism
 
-  deploy:
+  deploy-production:
     needs: build
     runs-on: WSL
 
@@ -76,4 +76,24 @@ jobs:
             sudo -u uhero cp -r ../uhero/data-portal-dist/dvw/assets/* ../uhero/data-portal-dist/assets && \
             echo "Deployment complete"
           EOF
-      
+
+  version-bump:
+    needs: deploy-production
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Bump version and changelog
+        run: |
+          git config user.email "actions@github.com" && \
+          git config user.name "GitHub Actions" && \
+          npx standard-version --commit-all -m "chore(release): bump version [skip ci]" && \
+          git push --follow-tags origin main 
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
