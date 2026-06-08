@@ -97,9 +97,6 @@ export class ModuleTableComponent implements OnChanges {
               <row r="${sourceRow + 3}"><c t="inlineStr" r="A${sourceRow + 3}"><is><t xml:space="preserve"></t></is></c></row>`
             );
             $(`c[r=A${sourceRow}] t`, sheet).text(sourceInfo[0]);
-            $(`c[r=A${sourceRow + 1}] t`, sheet).text(sourceInfo[1]);
-            $(`c[r=A${sourceRow + 2}] t`, sheet).text(sourceInfo[2]);
-            $(`c[r=A${sourceRow + 3}] t`, sheet).text(sourceInfo[3]);
           },
         }, {
           extend: 'csv',
@@ -110,7 +107,7 @@ export class ModuleTableComponent implements OnChanges {
           },
           title: tableTitle,
           customize(csv) {
-            return csv + `\n\n"${sourceInfo[0]}"\n"${sourceInfo[1]}"\n"${sourceInfo[2]}"\n"${sourceInfo[3]}"`
+            return csv + `\n\n"${sourceInfo[0]}"`
           }
         }, {
           extend: 'pdfHtml5',
@@ -198,7 +195,7 @@ export class ModuleTableComponent implements OnChanges {
             docContent.table.body = formattedTable;
             doc.content[1].table.widths = [...new Array(10)].map(() => '10%');
             doc.content.push({
-              text: `\n${sourceInfo[0]}\n${sourceInfo[1]}\n${sourceInfo[2]}\n${sourceInfo[3]}`
+              text: `\n${sourceInfo[0]}`
             });
           }
         }, {
@@ -298,7 +295,7 @@ export class ModuleTableComponent implements OnChanges {
             });
             $(win.document.body)
               .find('table:last-child')
-              .after(`<p>${sourceInfo[0]}<br />${sourceInfo[1]}<br />${sourceInfo[2]}<br />${sourceInfo[3]}</p>`);
+              .after(`<p>${sourceInfo[0]}`);
           }
         }
       ]
